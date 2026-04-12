@@ -24,25 +24,41 @@ export function StudyTimerShell() {
 
   const startTimer = useStudyTimerStore((state) => state.startTimer)
   const pauseTimer = useStudyTimerStore((state) => state.pauseTimer)
-  const resetCurrentPhase = useStudyTimerStore((state) => state.resetCurrentPhase)
-  const advanceToNextPhase = useStudyTimerStore((state) => state.advanceToNextPhase)
+  const resetCurrentPhase = useStudyTimerStore(
+    (state) => state.resetCurrentPhase
+  )
+  const advanceToNextPhase = useStudyTimerStore(
+    (state) => state.advanceToNextPhase
+  )
   const updateSettings = useStudyTimerStore((state) => state.updateSettings)
-  const setActiveTaskText = useStudyTimerStore((state) => state.setActiveTaskText)
-  const setActiveTaskChecked = useStudyTimerStore((state) => state.setActiveTaskChecked)
-  const deleteCompletedTask = useStudyTimerStore((state) => state.deleteCompletedTask)
+  const setActiveTaskText = useStudyTimerStore(
+    (state) => state.setActiveTaskText
+  )
+  const setActiveTaskChecked = useStudyTimerStore(
+    (state) => state.setActiveTaskChecked
+  )
+  const deleteCompletedTask = useStudyTimerStore(
+    (state) => state.deleteCompletedTask
+  )
   const setNotesDraft = useStudyTimerStore((state) => state.setNotesDraft)
   const saveNoteSnapshot = useStudyTimerStore((state) => state.saveNoteSnapshot)
-  const deleteNoteSnapshot = useStudyTimerStore((state) => state.deleteNoteSnapshot)
+  const deleteNoteSnapshot = useStudyTimerStore(
+    (state) => state.deleteNoteSnapshot
+  )
   const openNotesSheet = useStudyTimerStore((state) => state.openNotesSheet)
   const closeNotesSheet = useStudyTimerStore((state) => state.closeNotesSheet)
   const setNotesTab = useStudyTimerStore((state) => state.setNotesTab)
-  const openSettingsDrawer = useStudyTimerStore((state) => state.openSettingsDrawer)
-  const closeSettingsDrawer = useStudyTimerStore((state) => state.closeSettingsDrawer)
+  const openSettingsDrawer = useStudyTimerStore(
+    (state) => state.openSettingsDrawer
+  )
+  const closeSettingsDrawer = useStudyTimerStore(
+    (state) => state.closeSettingsDrawer
+  )
 
   const displayRemainingSeconds = getDisplayRemainingSeconds(timer, now)
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.18),_transparent_34%),linear-gradient(180deg,var(--background),color-mix(in_oklch,var(--background)_88%,white_12%))]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.18),transparent_34%),linear-gradient(180deg,var(--background),color-mix(in_oklch,var(--background)_88%,white_12%))]">
       <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
         <AppHeader
           theme={settings.theme}
@@ -77,9 +93,12 @@ export function StudyTimerShell() {
           <Card>
             <CardContent className="space-y-4 p-5 sm:p-6">
               <div>
-                <h2 className="text-lg font-semibold tracking-tight">Controls</h2>
+                <h2 className="text-lg font-semibold tracking-tight">
+                  Controls
+                </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Timer controls are wired to the store. The full state machine lives in the timer TODOs.
+                  Timer controls are wired to the store. The full state machine
+                  lives in the timer TODOs.
                 </p>
               </div>
               <TimerControls

@@ -17,9 +17,12 @@ import type {
   StudyTimerStore,
 } from "@/types/study-timer"
 
-let persistTimeout: number | null = null
+let persistTimeout: number | null = null // this is the timeoutID
 
-function selectPersistedState(state: StudyTimerStore): PersistedStudyTimerState {
+// i guess persist is to store the user time when the device is closed and the settings etc.
+function selectPersistedState(
+  state: StudyTimerStore
+): PersistedStudyTimerState {
   return {
     version: 1,
     settings: state.settings,
@@ -30,10 +33,12 @@ function selectPersistedState(state: StudyTimerStore): PersistedStudyTimerState 
   }
 }
 
+// this wrapper function is to save the state.
 function persistImmediately(state: StudyTimerStore) {
   saveState(selectPersistedState(state))
 }
 
+// persist every 2.5s?
 function schedulePersist(state: StudyTimerStore) {
   if (typeof window === "undefined") {
     return
@@ -50,6 +55,7 @@ function schedulePersist(state: StudyTimerStore) {
 
 const defaultPersistedState = createDefaultPersistedState()
 
+// zustand state here
 export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
   settings: defaultPersistedState.settings,
   timer: defaultPersistedState.timer,
@@ -57,6 +63,8 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
   completedTasks: defaultPersistedState.completedTasks,
   notes: defaultPersistedState.notes,
   ui: createDefaultUiState(),
+
+  // zustand store also stores FUNCTIONS that can log to the state and then save it.
   startTimer: () => {
     const currentState = get()
     const nextTimer = transitionTimerState({
@@ -217,7 +225,9 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     set((state) => ({
       notes: {
         ...state.notes,
-        snapshots: state.notes.snapshots.filter((snapshot) => snapshot.id !== id),
+        snapshots: state.notes.snapshots.filter(
+          (snapshot) => snapshot.id !== id
+        ),
       },
     }))
 
