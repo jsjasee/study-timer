@@ -8,6 +8,8 @@ type TransitionArgs = {
 }
 
 // when timer is completed, we run this to get the updated focus session count
+// REVIEW: More precisely, this only increments the count when the completed phase was "focus".
+// REVIEW: Break completion should not increase completedFocusSessions.
 function getCompletedFocusSessionCount(timer: TimerState) {
   return timer.phase === "focus"
     ? timer.completedFocusSessions + 1
@@ -47,6 +49,8 @@ export function transitionTimerState({
       return timer
     case "START":
       // if it is NOT idle or paused, means it is completed, the timer could be running or completed, there is nothing to update.
+      // REVIEW: Not quite. "not idle and not paused" means the timer is either "running" or "completed".
+      // REVIEW: This guard prevents restarting while already running and also prevents starting directly from the completed state.
       if (timer.status !== "idle" && timer.status !== "paused") {
         return timer
       }
@@ -71,7 +75,7 @@ export function transitionTimerState({
       const endMs = Date.parse(timer.expectedEndAt)
       const remainingSeconds = Number.isNaN(endMs)
         ? timer.remainingSeconds
-        : Math.max(0, Math.ceil((endMs - event.now.getTime()) / 1000))
+        : Math.max(0, Math.floor((endMs - event.now.getTime()) / 1000))
 
       return {
         ...timer,
@@ -116,6 +120,8 @@ export function transitionTimerState({
     case "HYDRATE_AND_RECOVER":
       // that means timer status could be idle or completed - nothing to update. normal behaviour. if it is running means user could have closed their device or smth.
       // or if expectedEndAt is empty, return timer i guess, timer ended.
+      // REVIEW: The first sentence is mostly right: recovery only repairs timers that were persisted as "running".
+      // REVIEW: The second sentence is not right. If status is "running" but expectedEndAt is missing, that is not "timer ended" - it is an invalid/incomplete running state, so the reducer safely returns the timer unchanged. (expectedEndAt might be missing if someone tampered with local storage.)
       if (timer.status !== "running" || !timer.expectedEndAt) {
         return timer
       }
@@ -123,8 +129,11 @@ export function transitionTimerState({
       const expectedEndAtMs = Date.parse(timer.expectedEndAt)
 
       if (
+        // Number.isNaN check is just a safety net against corrupt time data for some weird reason, maybe code corrupted etc. (can be removed.)
         Number.isNaN(expectedEndAtMs) ||
         event.now.getTime() < expectedEndAtMs // have NOT exceeded the actual end time, focus session in progress, so we return the normal timer. or the expectedEndAtMs is a number, then we also return the normal timer and do nothing.
+        // REVIEW: The important part here is simpler: return unchanged if the timestamp is invalid OR if "now" is still before the scheduled end time.
+        // REVIEW: In other words, only overdue running timers should be converted into "completed".
       ) {
         return timer
       }

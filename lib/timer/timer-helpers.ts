@@ -35,5 +35,5 @@ export function getDisplayRemainingSeconds(timer: TimerState, now: Date) {
     return timer.remainingSeconds
   }
 
-  return Math.max(0, Math.ceil((expectedEndAtMs - nowMs) / 1000))
+  return Math.max(0, Math.floor((expectedEndAtMs - nowMs) / 1000)) // use .floor to avoid the +1 second after unpausing error!
 }
