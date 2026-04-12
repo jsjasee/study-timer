@@ -129,7 +129,7 @@ export function transitionTimerState({
       const expectedEndAtMs = Date.parse(timer.expectedEndAt)
 
       if (
-        // Number.isNaN check is just a safety net against corrupt time data for some weird reason, maybe code corrupted etc. (can be removed.)
+        // Number.isNaN check is just a safety net against corrupt time data for some weird reason, maybe code corrupted etc. (this condition can be removed.)
         Number.isNaN(expectedEndAtMs) ||
         event.now.getTime() < expectedEndAtMs // have NOT exceeded the actual end time, focus session in progress, so we return the normal timer. or the expectedEndAtMs is a number, then we also return the normal timer and do nothing.
         // REVIEW: The important part here is simpler: return unchanged if the timestamp is invalid OR if "now" is still before the scheduled end time.
