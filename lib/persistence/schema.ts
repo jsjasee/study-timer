@@ -13,8 +13,8 @@ export const timerStatusSchema = z.enum([
 export const settingsSchema = z.object({
   focusMinutes: z.coerce.number().min(1).max(180),
   shortBreakMinutes: z.coerce.number().min(1).max(60),
-  longBreakMinutes: z.coerce.number().min(1).max(120),
-  sessionsBeforeLongBreak: z.coerce.number().min(4).max(10),
+  longBreakMinutes: z.coerce.number().min(1).max(180),
+  sessionsBeforeLongBreak: z.coerce.number().min(1).max(12),
   soundEnabled: z.boolean(),
   theme: themeModeSchema,
 })
