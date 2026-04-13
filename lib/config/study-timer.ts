@@ -13,7 +13,7 @@ export const STORAGE_KEY = "study-timer:v1"
 export const CURRENT_PERSISTENCE_VERSION = 1 as const
 
 export const DEFAULT_SETTINGS: Settings = {
-  focusMinutes: 0.5, // 25
+  focusMinutes: 25, // 25
   shortBreakMinutes: 1, // 5
   longBreakMinutes: 1, // 15
   sessionsBeforeLongBreak: 4, // 4

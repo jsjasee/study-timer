@@ -1,6 +1,12 @@
 import { CheckSquare } from "lucide-react"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 
 type ActiveTaskCardProps = {
@@ -25,7 +31,9 @@ export function ActiveTaskCard({
           </div>
           <div>
             <CardTitle>Active task</CardTitle>
-            <CardDescription>Your current task stays in place between sessions.</CardDescription>
+            <CardDescription>
+              Make each focus session intentional by setting a goal.
+            </CardDescription>
           </div>
         </div>
       </CardHeader>

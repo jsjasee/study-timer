@@ -92,15 +92,6 @@ export function StudyTimerShell() {
 
           <Card>
             <CardContent className="space-y-4 p-5 sm:p-6">
-              <div>
-                <h2 className="text-lg font-semibold tracking-tight">
-                  Controls
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Timer controls are wired to the store. The full state machine
-                  lives in the timer TODOs.
-                </p>
-              </div>
               <TimerControls
                 status={timer.status}
                 onStart={startTimer}

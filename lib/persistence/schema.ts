@@ -3,13 +3,18 @@ import { z } from "zod"
 // SCAFFOLD: Shared persistence schemas prevent invalid localStorage payloads from crashing the app.
 export const themeModeSchema = z.enum(["light", "dark"])
 export const timerPhaseSchema = z.enum(["focus", "shortBreak", "longBreak"])
-export const timerStatusSchema = z.enum(["idle", "running", "paused", "completed"])
+export const timerStatusSchema = z.enum([
+  "idle",
+  "running",
+  "paused",
+  "completed",
+])
 
 export const settingsSchema = z.object({
-  focusMinutes: z.number(),
-  shortBreakMinutes: z.number(),
-  longBreakMinutes: z.number(),
-  sessionsBeforeLongBreak: z.number(),
+  focusMinutes: z.coerce.number().min(1).max(180),
+  shortBreakMinutes: z.coerce.number().min(1).max(60),
+  longBreakMinutes: z.coerce.number().min(1).max(120),
+  sessionsBeforeLongBreak: z.coerce.number().min(4).max(10),
   soundEnabled: z.boolean(),
   theme: themeModeSchema,
 })
