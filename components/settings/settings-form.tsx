@@ -1,7 +1,20 @@
+"use client"
+
+import * as React from "react"
 import { Moon, Settings2, SunMedium, Volume2 } from "lucide-react"
 
+import {
+  TimeInput,
+  type TimeInputHandle,
+} from "@/components/settings/time-input"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -10,33 +23,22 @@ import type { Settings, ThemeMode } from "@/types/study-timer"
 type SettingsFormProps = {
   settings: Settings
   onPatchSettings: (patch: Partial<Settings>) => void
+  onSaveSuccess: () => void
 }
 
 type NumericSettingField = {
   id: keyof Pick<
     Settings,
-    "focusMinutes" | "shortBreakMinutes" | "longBreakMinutes" | "sessionsBeforeLongBreak"
+    | "focusMinutes"
+    | "shortBreakMinutes"
+    | "longBreakMinutes"
+    | "sessionsBeforeLongBreak"
   >
   label: string
   description: string
 }
 
 const numericFields: NumericSettingField[] = [
-  {
-    id: "focusMinutes",
-    label: "Focus minutes",
-    description: "Range target: 1-180",
-  },
-  {
-    id: "shortBreakMinutes",
-    label: "Short break minutes",
-    description: "Range target: 1-60",
-  },
-  {
-    id: "longBreakMinutes",
-    label: "Long break minutes",
-    description: "Range target: 1-180",
-  },
   {
     id: "sessionsBeforeLongBreak",
     label: "Sessions before long break",
@@ -47,9 +49,96 @@ const numericFields: NumericSettingField[] = [
 export function SettingsForm({
   settings,
   onPatchSettings,
+  onSaveSuccess,
 }: SettingsFormProps) {
+  const [draftSettings, setDraftSettings] = React.useState(settings)
+  const [errors, setErrors] = React.useState<Partial<Record<string, string>>>(
+    {}
+  )
+
+  const focusInputRef = React.useRef<TimeInputHandle>(null)
+  const shortBreakInputRef = React.useRef<TimeInputHandle>(null)
+  const longBreakInputRef = React.useRef<TimeInputHandle>(null)
+
+  React.useEffect(() => {
+    setDraftSettings(settings)
+    setErrors({})
+  }, [settings])
+
+  const updateDraftSetting = React.useCallback(
+    (key: keyof Settings, value: Settings[keyof Settings]) => {
+      setDraftSettings((currentSettings) => ({
+        ...currentSettings,
+        [key]: value,
+      }))
+
+      setErrors((currentErrors) => {
+        if (!currentErrors[key]) {
+          return currentErrors
+        }
+
+        const nextErrors = { ...currentErrors }
+        delete nextErrors[key]
+        return nextErrors
+      })
+    },
+    []
+  )
+
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const focusError = focusInputRef.current?.validate() ?? null
+    const shortBreakError = shortBreakInputRef.current?.validate() ?? null
+    const longBreakError = longBreakInputRef.current?.validate() ?? null
+
+    const nextErrors: Partial<Record<string, string>> = {}
+
+    if (focusError) {
+      nextErrors.focusMinutes = focusError
+    }
+
+    if (shortBreakError) {
+      nextErrors.shortBreakMinutes = shortBreakError
+    }
+
+    if (longBreakError) {
+      nextErrors.longBreakMinutes = longBreakError
+    }
+
+    if (
+      !Number.isInteger(draftSettings.sessionsBeforeLongBreak) ||
+      draftSettings.sessionsBeforeLongBreak < 1 ||
+      draftSettings.sessionsBeforeLongBreak > 12
+    ) {
+      nextErrors.sessionsBeforeLongBreak = "Enter a value from 1 to 12"
+    }
+
+    setErrors(nextErrors)
+
+    if (Object.keys(nextErrors).length > 0) {
+      return
+    }
+
+    onPatchSettings({
+      focusMinutes: Math.floor(
+        (focusInputRef.current?.getTotalSeconds() ?? 0) / 60
+      ),
+      shortBreakMinutes: Math.floor(
+        (shortBreakInputRef.current?.getTotalSeconds() ?? 0) / 60
+      ),
+      longBreakMinutes: Math.floor(
+        (longBreakInputRef.current?.getTotalSeconds() ?? 0) / 60
+      ),
+      sessionsBeforeLongBreak: draftSettings.sessionsBeforeLongBreak,
+      soundEnabled: draftSettings.soundEnabled,
+      theme: draftSettings.theme,
+    })
+    onSaveSuccess()
+  }
+
   return (
-    <div className="space-y-4">
+    <form className="space-y-4" onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -59,36 +148,93 @@ export function SettingsForm({
             <div>
               <CardTitle>Timer settings</CardTitle>
               <CardDescription>
-                Scaffolded inputs are wired. Validation rules still live in the TODOs.
+                Set your focus and break durations, then save when everything
+                looks right.
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {numericFields.map((field) => (
-            <div key={field.id} className="space-y-2">
-              <Label htmlFor={field.id}>{field.label}</Label>
-              <Input
-                id={field.id}
-                type="number"
-                min={1}
-                value={settings[field.id]}
-                onChange={(event) =>
-                  onPatchSettings({
-                    [field.id]: Number(event.target.value) || 0,
-                  })
-                }
-              />
-              <p className="text-xs text-muted-foreground">{field.description}</p>
-            </div>
-          ))}
+          <TimeInput
+            ref={focusInputRef}
+            label="Focus Time"
+            defaultHours={0}
+            defaultMinutes={settings.focusMinutes}
+            onChange={(totalSeconds) => {
+              updateDraftSetting("focusMinutes", Math.floor(totalSeconds / 60))
+            }}
+            error={errors.focusMinutes ?? null}
+          />
+
+          <TimeInput
+            ref={shortBreakInputRef}
+            label="Short Break"
+            defaultHours={0}
+            defaultMinutes={settings.shortBreakMinutes}
+            onChange={(totalSeconds) => {
+              updateDraftSetting(
+                "shortBreakMinutes",
+                Math.floor(totalSeconds / 60)
+              )
+            }}
+            error={errors.shortBreakMinutes ?? null}
+          />
+
+          <TimeInput
+            ref={longBreakInputRef}
+            label="Long Break"
+            defaultHours={0}
+            defaultMinutes={settings.longBreakMinutes}
+            onChange={(totalSeconds) => {
+              updateDraftSetting(
+                "longBreakMinutes",
+                Math.floor(totalSeconds / 60)
+              )
+            }}
+            error={errors.longBreakMinutes ?? null}
+          />
+
+          <div className="grid gap-4">
+            {numericFields.map((field) => (
+              <div key={field.id} className="space-y-2">
+                <Label htmlFor={field.id}>{field.label}</Label>
+                <Input
+                  id={field.id}
+                  type="number"
+                  min={1}
+                  aria-invalid={Boolean(errors[field.id])}
+                  value={draftSettings[field.id]}
+                  onChange={(event) =>
+                    updateDraftSetting(
+                      field.id,
+                      Number(event.target.value) || 0
+                    )
+                  }
+                  className={
+                    errors[field.id]
+                      ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                      : undefined
+                  }
+                />
+                {errors[field.id] ? (
+                  <p className="text-xs text-destructive">{errors[field.id]}</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    {field.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
           <CardTitle>Preferences</CardTitle>
-          <CardDescription>Theme and sound toggles are wired to the shared store.</CardDescription>
+          <CardDescription>
+            Theme and sound toggles are wired to the shared store.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
           <div className="space-y-3">
@@ -101,9 +247,13 @@ export function SettingsForm({
                   <Button
                     key={themeOption}
                     type="button"
-                    variant={settings.theme === themeOption ? "default" : "outline"}
+                    variant={
+                      draftSettings.theme === themeOption
+                        ? "default"
+                        : "outline"
+                    }
                     className="h-12 rounded-2xl"
-                    onClick={() => onPatchSettings({ theme: themeOption })}
+                    onClick={() => updateDraftSetting("theme", themeOption)}
                   >
                     <Icon className="size-4" />
                     {themeOption === "light" ? "Light" : "Dark"}
@@ -114,7 +264,10 @@ export function SettingsForm({
           </div>
           <div className="flex items-center justify-between gap-3 rounded-[24px] border border-border/80 p-4">
             <div className="space-y-1">
-              <Label htmlFor="sound-enabled" className="flex items-center gap-2">
+              <Label
+                htmlFor="sound-enabled"
+                className="flex items-center gap-2"
+              >
                 <Volume2 className="size-4" />
                 Completion chime
               </Label>
@@ -124,12 +277,18 @@ export function SettingsForm({
             </div>
             <Switch
               id="sound-enabled"
-              checked={settings.soundEnabled}
-              onCheckedChange={(checked) => onPatchSettings({ soundEnabled: checked })}
+              checked={draftSettings.soundEnabled}
+              onCheckedChange={(checked) =>
+                updateDraftSetting("soundEnabled", checked)
+              }
             />
           </div>
         </CardContent>
       </Card>
-    </div>
+
+      <Button type="submit" size="lg" className="h-12 w-full rounded-2xl">
+        Save
+      </Button>
+    </form>
   )
 }

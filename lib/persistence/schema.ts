@@ -10,6 +10,7 @@ export const timerStatusSchema = z.enum([
   "completed",
 ])
 
+// this is only validation on the local storage side, when we try to save the data into local storage, UI is validating in ANOTHER METHOD, THE settings-form.tsx and time-input.tsx area!
 export const settingsSchema = z.object({
   focusMinutes: z.coerce.number().min(1).max(180),
   shortBreakMinutes: z.coerce.number().min(1).max(60),

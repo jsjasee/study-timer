@@ -12,10 +12,18 @@ import type {
 export const STORAGE_KEY = "study-timer:v1"
 export const CURRENT_PERSISTENCE_VERSION = 1 as const
 
+export const LIMITS = {
+  // the lower limit is always 1, below denotes the upper limit.
+  maxFocusMinutes: 180,
+  maxShortBreakMinutes: 60, // 5
+  maxLongBreakMinutes: 120, // 15
+  maxSessionsBeforeLongBreak: 12, // 4
+}
+
 export const DEFAULT_SETTINGS: Settings = {
   focusMinutes: 25, // 25
-  shortBreakMinutes: 1, // 5
-  longBreakMinutes: 1, // 15
+  shortBreakMinutes: 5, // 5
+  longBreakMinutes: 15, // 15
   sessionsBeforeLongBreak: 4, // 4
   soundEnabled: true, // true
   theme: "light",

@@ -31,7 +31,11 @@ export function SettingsDrawer({
           </SheetDescription>
         </SheetHeader>
         <div className="px-5 pb-5 sm:px-6 sm:pb-6">
-          <SettingsForm settings={settings} onPatchSettings={onPatchSettings} />
+          <SettingsForm
+            settings={settings}
+            onPatchSettings={onPatchSettings}
+            onSaveSuccess={() => onOpenChange(false)}
+          />
         </div>
       </SheetContent>
     </Sheet>
