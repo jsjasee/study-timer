@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Moon, Settings2, SunMedium, Volume2 } from "lucide-react"
+import { Coffee, Moon, Settings2, SunMedium, Volume2 } from "lucide-react"
 
 import {
   TimeInput,
@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { LIMITS } from "@/lib/config/study-timer"
 import type { Settings, ThemeMode } from "@/types/study-timer"
 
 type SettingsFormProps = {
@@ -41,8 +42,8 @@ type NumericSettingField = {
 const numericFields: NumericSettingField[] = [
   {
     id: "sessionsBeforeLongBreak",
-    label: "Sessions before long break",
-    description: "Range target: 1-12",
+    label: "",
+    description: `Range target: 1-${LIMITS.maxSessionsBeforeLongBreak}`,
   },
 ]
 
@@ -109,9 +110,9 @@ export function SettingsForm({
     if (
       !Number.isInteger(draftSettings.sessionsBeforeLongBreak) ||
       draftSettings.sessionsBeforeLongBreak < 1 ||
-      draftSettings.sessionsBeforeLongBreak > 12
+      draftSettings.sessionsBeforeLongBreak > LIMITS.maxSessionsBeforeLongBreak
     ) {
-      nextErrors.sessionsBeforeLongBreak = "Enter a value from 1 to 12"
+      nextErrors.sessionsBeforeLongBreak = `Enter a value from 1 to ${LIMITS.maxSessionsBeforeLongBreak}`
     }
 
     setErrors(nextErrors)
@@ -160,6 +161,7 @@ export function SettingsForm({
             label="Focus Time"
             defaultHours={0}
             defaultMinutes={settings.focusMinutes}
+            maxTotalMinutes={LIMITS.maxFocusMinutes}
             onChange={(totalSeconds) => {
               updateDraftSetting("focusMinutes", Math.floor(totalSeconds / 60))
             }}
@@ -171,6 +173,7 @@ export function SettingsForm({
             label="Short Break"
             defaultHours={0}
             defaultMinutes={settings.shortBreakMinutes}
+            maxTotalMinutes={LIMITS.maxShortBreakMinutes}
             onChange={(totalSeconds) => {
               updateDraftSetting(
                 "shortBreakMinutes",
@@ -185,6 +188,7 @@ export function SettingsForm({
             label="Long Break"
             defaultHours={0}
             defaultMinutes={settings.longBreakMinutes}
+            maxTotalMinutes={LIMITS.maxLongBreakMinutes}
             onChange={(totalSeconds) => {
               updateDraftSetting(
                 "longBreakMinutes",
@@ -193,7 +197,24 @@ export function SettingsForm({
             }}
             error={errors.longBreakMinutes ?? null}
           />
+        </CardContent>
+      </Card>
 
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/12 text-primary">
+              <Coffee className="size-5" />
+            </div>
+            <div>
+              <CardTitle>Sessions</CardTitle>
+              <CardDescription>
+                Configure the number of focus sessions before a long break.
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div className="grid gap-4">
             {numericFields.map((field) => (
               <div key={field.id} className="space-y-2">
@@ -202,6 +223,7 @@ export function SettingsForm({
                   id={field.id}
                   type="number"
                   min={1}
+                  max={LIMITS.maxSessionsBeforeLongBreak}
                   aria-invalid={Boolean(errors[field.id])}
                   value={draftSettings[field.id]}
                   onChange={(event) =>
