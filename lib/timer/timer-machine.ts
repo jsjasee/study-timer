@@ -31,6 +31,7 @@ function getNextPhase(
 }
 
 // SCAFFOLD: This file is the dedicated home for timer state transitions.
+// transition timer state is used heavily in use-study-timer-store.ts, this function is just accepting a timer, settings and an event, the settings is used to calculate remaining seconds for that phase? timer contains the phase. WHO WILL PASS THE EVENT? I SUPPOSE THE EVENT IS PASSED WHEN TIMER IS UP aka 0s? with this event then this function will figure out what remaining seconds to set?
 export function transitionTimerState({
   timer,
   settings,

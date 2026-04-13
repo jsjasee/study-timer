@@ -20,6 +20,7 @@ export const LIMITS = {
   maxSessionsBeforeLongBreak: 12, // 4
 }
 
+// defaults for the project (on first load and user has no data in local storage, will use these settings.)
 export const DEFAULT_SETTINGS: Settings = {
   focusMinutes: 25, // 25
   shortBreakMinutes: 5, // 5
@@ -29,6 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: "light",
 }
 
+// the default phase on first load, and we will use this timer object.
 export const DEFAULT_TIMER: TimerState = {
   phase: "focus",
   status: "idle",
@@ -55,6 +57,7 @@ export const DEFAULT_UI: UiState = {
   isSettingsDrawerOpen: false,
 }
 
+// not sure what this does, is it to create that initial state to save into zustand? what is persistance in simple terms? saving into local storage?
 export function createDefaultPersistedState(): PersistedStudyTimerState {
   return {
     version: CURRENT_PERSISTENCE_VERSION,
@@ -69,10 +72,12 @@ export function createDefaultPersistedState(): PersistedStudyTimerState {
   }
 }
 
+// this one is to save the initial ui into zustand i suppose? but which properties are needed in zustand for the ui, and when? is it the timer? the seconds? im guessing - is to build the ui, but the store has a ui object, not sure where this ui property is used.
 export function createDefaultUiState(): UiState {
   return { ...DEFAULT_UI }
 }
 
+// applying light or dark theme universally.
 export function applyThemeMode(theme: ThemeMode) {
   if (typeof document === "undefined") {
     return

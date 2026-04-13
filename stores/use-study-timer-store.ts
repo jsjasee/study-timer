@@ -19,7 +19,7 @@ import type {
 
 let persistTimeout: number | null = null // this is the timeoutID
 
-// i guess persist is to store the user time when the device is closed and the settings etc.
+// i guess this function is returning all the settings of the inputted state.. from local storage since the stuff is stored there? where is this used? for what?
 function selectPersistedState(
   state: StudyTimerStore
 ): PersistedStudyTimerState {
@@ -33,12 +33,12 @@ function selectPersistedState(
   }
 }
 
-// this wrapper function is to save the state.
+// this function accepts a state and then calls a function to SAVE the STATE, the input is just the state (aka all the stuff, the timer, task, notes etc) that it wants to save?? its just a wrapper function.
 function persistImmediately(state: StudyTimerStore) {
   saveState(selectPersistedState(state))
 }
 
-// persist every 2.5s?
+// if window is somehow undefined... do nothing (when will this happen? i suppose one device is closed or its hacked or something..?) if there a timeout ID, we want to clear it first (because we have reached the time), then we set another 250ms before we save the state. why not use persistImmediately? since it's literally doing the same thing, can replace 'saveState(selectPersistedState(state))'
 function schedulePersist(state: StudyTimerStore) {
   if (typeof window === "undefined") {
     return
@@ -53,6 +53,7 @@ function schedulePersist(state: StudyTimerStore) {
   }, 250)
 }
 
+// so here i am creating the default options to save into local storage i suppose?
 const defaultPersistedState = createDefaultPersistedState()
 
 // zustand state here
@@ -65,6 +66,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
   ui: createDefaultUiState(),
 
   // zustand store also stores FUNCTIONS that can log to the state and then save it.
+  //
   startTimer: () => {
     const currentState = get()
     const nextTimer = transitionTimerState({
@@ -73,8 +75,8 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
       event: { type: "START" },
     })
 
-    set({ timer: nextTimer })
-    persistImmediately(get())
+    set({ timer: nextTimer }) // im changing the timer to the next timer, so the whole store is changed.
+    persistImmediately(get()) // ok here when i start the timer, i am saving the state (aka all the timers, notes, tasks etc.) RIGHT NOW. (in a sense state is like a mini store w/o all the ui settings and functions? its the object to save into local storage..?)
   },
   pauseTimer: () => {
     const currentState = get()
@@ -82,7 +84,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
       timer: currentState.timer,
       settings: currentState.settings,
       event: { type: "PAUSE", now: new Date() },
-    })
+    }) //
 
     set({ timer: nextTimer })
     persistImmediately(get())
@@ -129,7 +131,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     }
   },
   tickVisualOnly: () => {
-    // TODO(business-logic): Add a UI-only heartbeat if you want selectors or derived countdown state to update inside the store.
+    // TODO(business-logic): Add a UI-only heartbeat if you want selectors or derived countdown state to update inside the store. (what is this UI-only heartbeat?)
   },
   updateSettings: (patch) => {
     set((state) => ({
@@ -159,6 +161,11 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     const trimmedTask = currentState.activeTask.text.trim()
     const shouldAppendHistoryEntry =
       !currentState.activeTask.checked && checked && trimmedTask.length > 0
+
+    if (trimmedTask === "") {
+      return
+      // if user ticks nothing, return
+    }
 
     set((state) => ({
       activeTask: {
