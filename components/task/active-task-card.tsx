@@ -54,9 +54,6 @@ export function ActiveTaskCard({
               className={checked ? "line-through opacity-70" : ""}
               aria-label="Active task"
             />
-            <p className="text-xs text-muted-foreground">
-              Checking the box creates one completed-task history entry.
-            </p>
           </div>
         </label>
       </CardContent>

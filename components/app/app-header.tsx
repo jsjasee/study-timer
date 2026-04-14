@@ -19,7 +19,13 @@ export function AppHeader({
 
   return (
     <header className="flex items-start justify-between gap-4">
-      <div className="space-y-3"></div>
+      <div className="space-y-3">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-[-0.05em] text-balance sm:text-4xl">
+            Study Cafe
+          </h1>
+        </div>
+      </div>
       <div className="flex items-center gap-2">
         <Button
           type="button"
