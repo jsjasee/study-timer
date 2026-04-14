@@ -19,12 +19,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { LIMITS } from "@/lib/config/study-timer"
-import type { Settings, ThemeMode } from "@/types/study-timer"
+import type { Settings, ThemeMode, TimerStatus } from "@/types/study-timer"
 
 type SettingsFormProps = {
   settings: Settings
+  timerStatus: TimerStatus
   onPatchSettings: (patch: Partial<Settings>) => void
-  onSaveSuccess: () => void
+  onApplySettings: () => void
+  onSaveSuccess: (mode: "applied" | "saved") => void
 }
 
 type NumericSettingField = {
@@ -49,13 +51,16 @@ const numericFields: NumericSettingField[] = [
 
 export function SettingsForm({
   settings,
+  timerStatus,
   onPatchSettings,
+  onApplySettings,
   onSaveSuccess,
 }: SettingsFormProps) {
   const [draftSettings, setDraftSettings] = React.useState(settings)
   const [errors, setErrors] = React.useState<Partial<Record<string, string>>>(
     {}
   )
+  const [isSaving, setIsSaving] = React.useState(false)
 
   const focusInputRef = React.useRef<TimeInputHandle>(null)
   const shortBreakInputRef = React.useRef<TimeInputHandle>(null)
@@ -89,6 +94,10 @@ export function SettingsForm({
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
 
+    if (isSaving) {
+      return
+    }
+
     const focusError = focusInputRef.current?.validate() ?? null
     const shortBreakError = shortBreakInputRef.current?.validate() ?? null
     const longBreakError = longBreakInputRef.current?.validate() ?? null
@@ -121,6 +130,8 @@ export function SettingsForm({
       return
     }
 
+    setIsSaving(true)
+
     onPatchSettings({
       focusMinutes: Math.floor(
         (focusInputRef.current?.getTotalSeconds() ?? 0) / 60
@@ -135,7 +146,14 @@ export function SettingsForm({
       soundEnabled: draftSettings.soundEnabled,
       theme: draftSettings.theme,
     })
-    onSaveSuccess()
+
+    if (timerStatus === "idle") {
+      onApplySettings()
+      onSaveSuccess("applied")
+      return
+    }
+
+    onSaveSuccess("saved")
   }
 
   return (
@@ -308,7 +326,12 @@ export function SettingsForm({
         </CardContent>
       </Card>
 
-      <Button type="submit" size="lg" className="h-12 w-full rounded-2xl">
+      <Button
+        type="submit"
+        size="lg"
+        className="h-12 w-full rounded-2xl"
+        disabled={isSaving}
+      >
         Save
       </Button>
     </form>

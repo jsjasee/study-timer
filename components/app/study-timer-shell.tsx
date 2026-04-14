@@ -1,5 +1,7 @@
 "use client"
 
+import { toast, Toaster } from "react-hot-toast"
+
 import { AppHeader } from "@/components/app/app-header"
 import { NotesFab } from "@/components/notes/notes-fab"
 import { NotesSheet } from "@/components/notes/notes-sheet"
@@ -56,6 +58,15 @@ export function StudyTimerShell() {
   )
 
   const displayRemainingSeconds = getDisplayRemainingSeconds(timer, now)
+
+  const handleSettingsSaveSuccess = (mode: "applied" | "saved") => {
+    closeSettingsDrawer()
+    toast.success(
+      mode === "applied"
+        ? "Settings saved & applied."
+        : "Settings saved. Reset to apply."
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.18),transparent_34%),linear-gradient(180deg,var(--background),color-mix(in_oklch,var(--background)_88%,white_12%))]">
@@ -129,6 +140,7 @@ export function StudyTimerShell() {
       <SettingsDrawer
         open={ui.isSettingsDrawerOpen}
         settings={settings}
+        timerStatus={timer.status}
         onOpenChange={(open) => {
           if (open) {
             openSettingsDrawer()
@@ -138,6 +150,29 @@ export function StudyTimerShell() {
           closeSettingsDrawer()
         }}
         onPatchSettings={updateSettings}
+        onApplySettings={resetCurrentPhase}
+        onSaveSuccess={handleSettingsSaveSuccess}
+      />
+
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "var(--card)",
+            color: "var(--card-foreground)",
+            border: "1px solid color-mix(in oklch, var(--border) 88%, transparent)",
+            borderRadius: "1rem",
+            boxShadow:
+              "0 20px 45px color-mix(in oklch, var(--foreground) 10%, transparent)",
+            padding: "0.875rem 1rem",
+          },
+        }}
+        containerStyle={{
+          top: 16,
+          left: 16,
+          right: 16,
+        }}
       />
     </div>
   )

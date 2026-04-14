@@ -6,20 +6,26 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { SettingsForm } from "@/components/settings/settings-form"
-import type { Settings } from "@/types/study-timer"
+import type { Settings, TimerStatus } from "@/types/study-timer"
 
 type SettingsDrawerProps = {
   open: boolean
   settings: Settings
+  timerStatus: TimerStatus
   onOpenChange: (open: boolean) => void
   onPatchSettings: (patch: Partial<Settings>) => void
+  onApplySettings: () => void
+  onSaveSuccess: (mode: "applied" | "saved") => void
 }
 
 export function SettingsDrawer({
   open,
   settings,
+  timerStatus,
   onOpenChange,
   onPatchSettings,
+  onApplySettings,
+  onSaveSuccess,
 }: SettingsDrawerProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -33,8 +39,10 @@ export function SettingsDrawer({
         <div className="px-5 pb-5 sm:px-6 sm:pb-6">
           <SettingsForm
             settings={settings}
+            timerStatus={timerStatus}
             onPatchSettings={onPatchSettings}
-            onSaveSuccess={() => onOpenChange(false)}
+            onApplySettings={onApplySettings}
+            onSaveSuccess={onSaveSuccess}
           />
         </div>
       </SheetContent>
