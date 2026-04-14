@@ -19,17 +19,7 @@ export function AppHeader({
 
   return (
     <header className="flex items-start justify-between gap-4">
-      <div className="space-y-3">
-        <Badge variant="secondary">Local-first v1 scaffold</Badge>
-        <div>
-          <h1 className="text-3xl font-semibold tracking-[-0.05em] text-balance sm:text-4xl">
-            Study Timer
-          </h1>
-          <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            Single-screen Pomodoro shell with task, notes, settings, and persistence scaffolding.
-          </p>
-        </div>
-      </div>
+      <div className="space-y-3"></div>
       <div className="flex items-center gap-2">
         <Button
           type="button"

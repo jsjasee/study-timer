@@ -88,6 +88,12 @@ export function StudyTimerShell() {
             remainingSeconds={displayRemainingSeconds}
             completedFocusSessions={timer.completedFocusSessions}
           />
+          <TimerControls
+            status={timer.status}
+            onStart={startTimer}
+            onPause={pauseTimer}
+            onReset={resetCurrentPhase}
+          />
 
           <CompletedPhaseBanner
             isVisible={timer.status === "completed"}
@@ -100,17 +106,6 @@ export function StudyTimerShell() {
             onTextChange={setActiveTaskText}
             onCheckedChange={setActiveTaskChecked}
           />
-
-          <Card>
-            <CardContent className="space-y-4 p-5 sm:p-6">
-              <TimerControls
-                status={timer.status}
-                onStart={startTimer}
-                onPause={pauseTimer}
-                onReset={resetCurrentPhase}
-              />
-            </CardContent>
-          </Card>
         </div>
       </main>
 
@@ -161,7 +156,8 @@ export function StudyTimerShell() {
           style: {
             background: "var(--card)",
             color: "var(--card-foreground)",
-            border: "1px solid color-mix(in oklch, var(--border) 88%, transparent)",
+            border:
+              "1px solid color-mix(in oklch, var(--border) 88%, transparent)",
             borderRadius: "1rem",
             boxShadow:
               "0 20px 45px color-mix(in oklch, var(--foreground) 10%, transparent)",
