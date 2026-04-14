@@ -31,9 +31,6 @@ export function TimerDisplay({
           <div className="text-[4rem] font-semibold tracking-[-0.08em] text-foreground sm:text-[5rem]">
             {formatRemainingTime(remainingSeconds)}
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">
-            [Timer guidance placeholder]
-          </p>
         </div>
         <div className="flex items-center justify-between gap-3 rounded-[24px] border border-dashed border-border/80 px-4 py-3 text-sm text-muted-foreground">
           <span>Completed focus sessions</span>
