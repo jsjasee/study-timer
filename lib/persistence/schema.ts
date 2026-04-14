@@ -52,10 +52,21 @@ export const notesStateSchema = z.object({
   snapshots: z.array(noteSnapshotSchema),
 })
 
-export const persistedStudyTimerStateSchema = z.object({
+export const persistedStudyTimerStateV1Schema = z.object({
   version: z.literal(1),
   settings: settingsSchema,
   timer: timerStateSchema,
+  activeTask: activeTaskSchema,
+  completedTasks: z.array(completedTaskEntrySchema),
+  notes: notesStateSchema,
+})
+
+// why is there a new schema? is this for v2? why is there v2? so i can migrate back to v1 if needed?
+export const persistedStudyTimerStateSchema = z.object({
+  version: z.literal(2),
+  settings: settingsSchema,
+  timer: timerStateSchema,
+  totalCompletedFocusSessions: z.number(),
   activeTask: activeTaskSchema,
   completedTasks: z.array(completedTaskEntrySchema),
   notes: notesStateSchema,

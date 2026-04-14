@@ -10,7 +10,7 @@ import type {
 
 // SCAFFOLD: Centralized constants keep the app shell and persistence layer aligned.
 export const STORAGE_KEY = "study-timer:v1"
-export const CURRENT_PERSISTENCE_VERSION = 1 as const
+export const CURRENT_PERSISTENCE_VERSION = 2 as const // what is this current_persistence version used for?
 
 export const LIMITS = {
   // the lower limit is always 1, below denotes the upper limit.
@@ -64,6 +64,7 @@ export function createDefaultPersistedState(): PersistedStudyTimerState {
     version: CURRENT_PERSISTENCE_VERSION,
     settings: { ...DEFAULT_SETTINGS },
     timer: { ...DEFAULT_TIMER },
+    totalCompletedFocusSessions: 0,
     activeTask: { ...DEFAULT_ACTIVE_TASK },
     completedTasks: [],
     notes: {

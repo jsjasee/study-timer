@@ -8,9 +8,9 @@ import { NotesSheet } from "@/components/notes/notes-sheet"
 import { SettingsDrawer } from "@/components/settings/settings-drawer"
 import { ActiveTaskCard } from "@/components/task/active-task-card"
 import { CompletedPhaseBanner } from "@/components/timer/completed-phase-banner"
+import { SessionProgressDots } from "@/components/timer/session-progress-dots"
 import { TimerControls } from "@/components/timer/timer-controls"
 import { TimerDisplay } from "@/components/timer/timer-display"
-import { Card, CardContent } from "@/components/ui/card"
 import { useStudyTimerBootstrap } from "@/hooks/use-study-timer-bootstrap"
 import { getDisplayRemainingSeconds } from "@/lib/timer/timer-helpers"
 import { useStudyTimerStore } from "@/stores/use-study-timer-store"
@@ -19,6 +19,9 @@ export function StudyTimerShell() {
   const { now } = useStudyTimerBootstrap()
   const settings = useStudyTimerStore((state) => state.settings)
   const timer = useStudyTimerStore((state) => state.timer)
+  const totalCompletedFocusSessions = useStudyTimerStore(
+    (state) => state.totalCompletedFocusSessions
+  )
   const activeTask = useStudyTimerStore((state) => state.activeTask)
   const completedTasks = useStudyTimerStore((state) => state.completedTasks)
   const notes = useStudyTimerStore((state) => state.notes)
@@ -84,9 +87,11 @@ export function StudyTimerShell() {
         <div className="grid gap-6">
           <TimerDisplay
             phase={timer.phase}
-            status={timer.status}
             remainingSeconds={displayRemainingSeconds}
-            completedFocusSessions={timer.completedFocusSessions}
+          />
+          <SessionProgressDots
+            filledCount={timer.completedFocusSessions}
+            totalCount={settings.sessionsBeforeLongBreak}
           />
           <TimerControls
             status={timer.status}
@@ -117,6 +122,7 @@ export function StudyTimerShell() {
         draft={notes.currentDraft}
         completedTasks={completedTasks}
         savedNotes={notes.snapshots}
+        totalCompletedFocusSessions={totalCompletedFocusSessions}
         onOpenChange={(open) => {
           if (open) {
             openNotesSheet()

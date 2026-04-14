@@ -47,7 +47,7 @@ export type NotesState = {
   snapshots: NoteSnapshot[]
 }
 
-export type NotesTab = "notes" | "completedTasks" | "savedNotes"
+export type NotesTab = "notes" | "completedTasks" | "savedNotes" | "stats"
 
 export type UiState = {
   isNotesSheetOpen: boolean
@@ -56,9 +56,10 @@ export type UiState = {
 }
 
 export type PersistedStudyTimerState = {
-  version: 1
+  version: 2
   settings: Settings
   timer: TimerState
+  totalCompletedFocusSessions: number
   activeTask: ActiveTask
   completedTasks: CompletedTaskEntry[]
   notes: NotesState
@@ -76,6 +77,7 @@ export type TimerEvent =
 export type StudyTimerStore = {
   settings: Settings
   timer: TimerState
+  totalCompletedFocusSessions: number
   activeTask: ActiveTask
   completedTasks: CompletedTaskEntry[]
   notes: NotesState

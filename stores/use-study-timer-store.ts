@@ -25,13 +25,48 @@ function selectPersistedState(
   state: StudyTimerStore
 ): PersistedStudyTimerState {
   return {
-    version: 1,
+    version: 2,
     settings: state.settings,
     timer: state.timer,
+    totalCompletedFocusSessions: state.totalCompletedFocusSessions,
     activeTask: state.activeTask,
     completedTasks: state.completedTasks,
     notes: state.notes,
   }
+}
+
+// so this function is increasing the number of dots by 1 i assume? why return 1 or 0?
+function getCompletedFocusIncrement(
+  previousState: StudyTimerStore,
+  nextTimer: StudyTimerStore["timer"]
+) {
+  const completedFocusJustNow =
+    previousState.timer.phase === "focus" &&
+    previousState.timer.status !== "completed" &&
+    nextTimer.status === "completed"
+
+  return completedFocusJustNow ? 1 : 0
+}
+
+// this is getting the number completed sessions by looking at the timer and comparing what is the previous state..?? how is previousState.timer and nextTimer.phase diff if both are from the same store..? who is using this function?
+function getNextCycleCompletedSessions(
+  previousState: StudyTimerStore,
+  nextTimer: StudyTimerStore["timer"]
+) {
+  const isRestartingAfterLongBreak =
+    previousState.timer.phase === "longBreak" &&
+    previousState.timer.status === "completed" &&
+    nextTimer.phase === "focus" &&
+    nextTimer.status === "idle"
+
+  if (isRestartingAfterLongBreak) {
+    return 0
+  }
+
+  return Math.min(
+    nextTimer.completedFocusSessions,
+    previousState.settings.sessionsBeforeLongBreak
+  )
 }
 
 // this function accepts a state and then calls a function to SAVE the STATE, the input is just the state (aka all the stuff, the timer, task, notes etc) that it wants to save?? its just a wrapper function.
@@ -64,6 +99,8 @@ const defaultPersistedState = createDefaultPersistedState()
 export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
   settings: defaultPersistedState.settings,
   timer: defaultPersistedState.timer,
+  totalCompletedFocusSessions:
+    defaultPersistedState.totalCompletedFocusSessions,
   activeTask: defaultPersistedState.activeTask,
   completedTasks: defaultPersistedState.completedTasks,
   notes: defaultPersistedState.notes,
@@ -113,7 +150,15 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
       event: { type: "ADVANCE_PHASE" },
     })
 
-    set({ timer: nextTimer })
+    set({
+      timer: {
+        ...nextTimer,
+        completedFocusSessions: getNextCycleCompletedSessions(
+          currentState,
+          nextTimer
+        ),
+      },
+    })
     persistImmediately(get())
   },
   hydrateAndRecover: () => {
@@ -123,12 +168,26 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
       settings: currentState.settings,
       now: new Date(),
     })
+    const completedFocusIncrement = getCompletedFocusIncrement(
+      currentState,
+      recoveredTimer
+    )
 
     const shouldPlayCompletionChime =
       currentState.timer.status !== "completed" &&
       recoveredTimer.status === "completed"
 
-    set({ timer: recoveredTimer })
+    set({
+      timer: {
+        ...recoveredTimer,
+        completedFocusSessions: getNextCycleCompletedSessions(
+          currentState,
+          recoveredTimer
+        ),
+      },
+      totalCompletedFocusSessions:
+        currentState.totalCompletedFocusSessions + completedFocusIncrement,
+    })
     persistImmediately(get())
 
     if (shouldPlayCompletionChime) {
@@ -140,12 +199,23 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     // ANSWER: A UI-only heartbeat is a 1s visual tick used to keep countdown displays fresh without persisting every second. In this app, the hook-level now state already plays that role outside the store. Refer to Notion for more info.
   },
   updateSettings: (patch) => {
-    set((state) => ({
-      settings: {
+    set((state) => {
+      const nextSettings = {
         ...state.settings,
         ...patch,
-      },
-    }))
+      }
+
+      return {
+        settings: nextSettings,
+        timer: {
+          ...state.timer,
+          completedFocusSessions: Math.min(
+            state.timer.completedFocusSessions,
+            nextSettings.sessionsBeforeLongBreak
+          ),
+        },
+      }
+    })
 
     applyThemeMode(get().settings.theme)
 
@@ -293,11 +363,31 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
       settings: persistedState.settings,
       now: new Date(),
     })
+    const completedFocusIncrement = getCompletedFocusIncrement(
+      {
+        ...get(),
+        settings: persistedState.settings,
+        timer: persistedState.timer,
+        totalCompletedFocusSessions: persistedState.totalCompletedFocusSessions,
+        activeTask: persistedState.activeTask,
+        completedTasks: persistedState.completedTasks,
+        notes: persistedState.notes,
+      },
+      recoveredTimer
+    )
 
     set((state) => ({
       ...state,
       settings: persistedState.settings,
-      timer: recoveredTimer,
+      timer: {
+        ...recoveredTimer,
+        completedFocusSessions: Math.min(
+          recoveredTimer.completedFocusSessions,
+          persistedState.settings.sessionsBeforeLongBreak
+        ),
+      },
+      totalCompletedFocusSessions:
+        persistedState.totalCompletedFocusSessions + completedFocusIncrement,
       activeTask: persistedState.activeTask,
       completedTasks: persistedState.completedTasks,
       notes: persistedState.notes,
