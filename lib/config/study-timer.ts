@@ -58,6 +58,7 @@ export const DEFAULT_UI: UiState = {
 }
 
 // not sure what this does, is it to create that initial state to save into zustand? what is persistance in simple terms? saving into local storage?
+// ANSWER: This creates a fresh default persisted data object; it does not save anything by itself. Persistence here means saving only data like settings/timer/task/notes to localStorage so it survives reloads. Refer to Notion for more info.
 export function createDefaultPersistedState(): PersistedStudyTimerState {
   return {
     version: CURRENT_PERSISTENCE_VERSION,
@@ -73,6 +74,7 @@ export function createDefaultPersistedState(): PersistedStudyTimerState {
 }
 
 // this one is to save the initial ui into zustand i suppose? but which properties are needed in zustand for the ui, and when? is it the timer? the seconds? im guessing - is to build the ui, but the store has a ui object, not sure where this ui property is used.
+// ANSWER: Yes, this creates only the UI slice for Zustand, like notes/settings panel open state and selected tab. It is not timer logic and is not persisted to localStorage. Refer to Notion for more info.
 export function createDefaultUiState(): UiState {
   return { ...DEFAULT_UI }
 }

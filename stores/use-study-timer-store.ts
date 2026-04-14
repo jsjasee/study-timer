@@ -20,6 +20,7 @@ import type {
 let persistTimeout: number | null = null // this is the timeoutID
 
 // i guess this function is returning all the settings of the inputted state.. from local storage since the stuff is stored there? where is this used? for what?
+// ANSWER: This does not read localStorage; it picks only the persistable fields from the full Zustand store. It is used right before saving so UI state/functions are excluded. Refer to Notion for more info.
 function selectPersistedState(
   state: StudyTimerStore
 ): PersistedStudyTimerState {
@@ -34,11 +35,13 @@ function selectPersistedState(
 }
 
 // this function accepts a state and then calls a function to SAVE the STATE, the input is just the state (aka all the stuff, the timer, task, notes etc) that it wants to save?? its just a wrapper function.
+// ANSWER: Yes, this is a thin wrapper. It takes the full store state, filters it through selectPersistedState, then saves only the persistable data. Refer to Notion for more info.
 function persistImmediately(state: StudyTimerStore) {
   saveState(selectPersistedState(state))
 }
 
 // if window is somehow undefined... do nothing (when will this happen? i suppose one device is closed or its hacked or something..?) if there a timeout ID, we want to clear it first (because we have reached the time), then we set another 250ms before we save the state. why not use persistImmediately? since it's literally doing the same thing, can replace 'saveState(selectPersistedState(state))'
+// ANSWER: window is undefined during server-side rendering, not because of hacking/device issues. This debounces rapid saves into one delayed save; using persistImmediately inside the timeout would also work, but this inlines the same logic. Refer to Notion for more info.
 function schedulePersist(state: StudyTimerStore) {
   if (typeof window === "undefined") {
     return
@@ -54,6 +57,7 @@ function schedulePersist(state: StudyTimerStore) {
 }
 
 // so here i am creating the default options to save into local storage i suppose?
+// ANSWER: Yes, this creates the default persisted data model used to seed the store and to fall back when localStorage is empty or invalid. Refer to Notion for more info.
 const defaultPersistedState = createDefaultPersistedState()
 
 // zustand state here
@@ -77,6 +81,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
 
     set({ timer: nextTimer }) // im changing the timer to the next timer, so the whole store is changed.
     persistImmediately(get()) // ok here when i start the timer, i am saving the state (aka all the timers, notes, tasks etc.) RIGHT NOW. (in a sense state is like a mini store w/o all the ui settings and functions? its the object to save into local storage..?)
+    // ANSWER: get() returns the full Zustand store, not a mini store. persistImmediately then filters that full store down to the persistable fields before saving. Refer to Notion for more info.
   },
   pauseTimer: () => {
     const currentState = get()
@@ -132,6 +137,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
   },
   tickVisualOnly: () => {
     // TODO(business-logic): Add a UI-only heartbeat if you want selectors or derived countdown state to update inside the store. (what is this UI-only heartbeat?)
+    // ANSWER: A UI-only heartbeat is a 1s visual tick used to keep countdown displays fresh without persisting every second. In this app, the hook-level now state already plays that role outside the store. Refer to Notion for more info.
   },
   updateSettings: (patch) => {
     set((state) => ({
