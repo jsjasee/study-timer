@@ -2,6 +2,13 @@ import type { Metadata } from "next"
 
 import "./globals.css"
 
+import { Inter } from "next/font/google"
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+})
+
 const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Study Timer"
 
 export const metadata: Metadata = {
@@ -19,7 +26,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className="h-full antialiased"
+      className={`h-full ${inter.className} antialiased`}
     >
       <body className="min-h-full bg-background font-sans text-foreground">
         {children}

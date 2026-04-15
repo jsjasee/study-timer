@@ -1,13 +1,5 @@
-import { CheckSquare } from "lucide-react"
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 type ActiveTaskCardProps = {
   text: string
@@ -23,40 +15,24 @@ export function ActiveTaskCard({
   onCheckedChange,
 }: ActiveTaskCardProps) {
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/12 text-primary">
-            <CheckSquare className="size-5" />
-          </div>
-          <div>
-            <CardTitle>Active task</CardTitle>
-            <CardDescription>
-              Make each focus session intentional by setting a goal.
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <label className="flex items-start gap-3 rounded-[24px] border border-border/80 bg-background/80 p-4">
-          <input
-            type="checkbox"
-            checked={checked}
-            onChange={(event) => onCheckedChange(event.target.checked)}
-            className="mt-1 size-5 rounded border-border text-primary focus:ring-4 focus:ring-ring/20"
-            aria-label="Mark active task as complete"
-          />
-          <div className="flex-1 space-y-2">
-            <Input
-              value={text}
-              onChange={(event) => onTextChange(event.target.value)}
-              placeholder="[Active task text placeholder]"
-              className={checked ? "line-through opacity-70" : ""}
-              aria-label="Active task"
-            />
-          </div>
-        </label>
-      </CardContent>
-    </Card>
+    <label className="flex h-11 items-center gap-3 rounded-full border border-white/35 bg-white/45 px-3 shadow-[0_16px_50px_-28px_color-mix(in_oklch,var(--foreground)_28%,transparent)] backdrop-blur-xl dark:border-white/10 dark:bg-white/7">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onCheckedChange(event.target.checked)}
+        className="size-4 shrink-0 rounded border-border bg-transparent text-primary focus:ring-4 focus:ring-ring/20"
+        aria-label="Mark active task as complete"
+      />
+      <Input
+        value={text}
+        onChange={(event) => onTextChange(event.target.value)}
+        placeholder="What are you focusing on?"
+        className={cn(
+          "h-auto border-0 bg-transparent px-0 text-sm shadow-none focus-visible:border-0 focus-visible:ring-0",
+          checked && "line-through opacity-65"
+        )}
+        aria-label="Active task"
+      />
+    </label>
   )
 }

@@ -7,10 +7,10 @@ import { NotesFab } from "@/components/notes/notes-fab"
 import { NotesSheet } from "@/components/notes/notes-sheet"
 import { SettingsDrawer } from "@/components/settings/settings-drawer"
 import { ActiveTaskCard } from "@/components/task/active-task-card"
-import { CompletedPhaseBanner } from "@/components/timer/completed-phase-banner"
 import { SessionProgressDots } from "@/components/timer/session-progress-dots"
 import { TimerControls } from "@/components/timer/timer-controls"
 import { TimerDisplay } from "@/components/timer/timer-display"
+import { AuroraBackground } from "@/components/ui/aurora-background"
 import { useStudyTimerBootstrap } from "@/hooks/use-study-timer-bootstrap"
 import { getDisplayRemainingSeconds } from "@/lib/timer/timer-helpers"
 import { useStudyTimerStore } from "@/stores/use-study-timer-store"
@@ -61,6 +61,12 @@ export function StudyTimerShell() {
   )
 
   const displayRemainingSeconds = getDisplayRemainingSeconds(timer, now)
+  const totalSeconds =
+    timer.phase === "focus"
+      ? settings.focusMinutes * 60
+      : timer.phase === "shortBreak"
+        ? settings.shortBreakMinutes * 60
+        : settings.longBreakMinutes * 60
 
   const handleSettingsSaveSuccess = (mode: "applied" | "saved") => {
     closeSettingsDrawer()
@@ -72,8 +78,10 @@ export function StudyTimerShell() {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.18),transparent_34%),linear-gradient(180deg,var(--background),color-mix(in_oklch,var(--background)_88%,white_12%))]">
-      <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
+    <div className="relative min-h-dvh overflow-hidden bg-background">
+      <AuroraBackground />
+
+      <main className="relative z-10 mx-auto flex h-dvh w-full max-w-lg flex-col overflow-hidden px-4 py-3 sm:max-w-xl sm:px-6 sm:py-4">
         <AppHeader
           theme={settings.theme}
           onToggleTheme={() =>
@@ -84,12 +92,24 @@ export function StudyTimerShell() {
           onOpenSettings={openSettingsDrawer}
         />
 
-        <div className="grid gap-6">
+        <div className="mt-2">
+          <ActiveTaskCard
+            text={activeTask.text}
+            checked={activeTask.checked}
+            onTextChange={setActiveTaskText}
+            onCheckedChange={setActiveTaskChecked}
+          />
+        </div>
+
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 overflow-hidden py-2 sm:gap-3">
           <TimerDisplay
             phase={timer.phase}
             remainingSeconds={displayRemainingSeconds}
+            totalSeconds={totalSeconds}
+            status={timer.status}
           />
           <SessionProgressDots
+            phase={timer.phase}
             filledCount={timer.completedFocusSessions}
             totalCount={settings.sessionsBeforeLongBreak}
           />
@@ -98,18 +118,7 @@ export function StudyTimerShell() {
             onStart={startTimer}
             onPause={pauseTimer}
             onReset={resetCurrentPhase}
-          />
-
-          <CompletedPhaseBanner
-            isVisible={timer.status === "completed"}
             onAdvance={advanceToNextPhase}
-          />
-
-          <ActiveTaskCard
-            text={activeTask.text}
-            checked={activeTask.checked}
-            onTextChange={setActiveTaskText}
-            onCheckedChange={setActiveTaskChecked}
           />
         </div>
       </main>
@@ -160,13 +169,14 @@ export function StudyTimerShell() {
         toastOptions={{
           duration: 3000,
           style: {
-            background: "var(--card)",
+            background: "color-mix(in oklch, var(--card) 82%, transparent)",
             color: "var(--card-foreground)",
             border:
               "1px solid color-mix(in oklch, var(--border) 88%, transparent)",
             borderRadius: "1rem",
             boxShadow:
-              "0 20px 45px color-mix(in oklch, var(--foreground) 10%, transparent)",
+              "0 20px 45px color-mix(in oklch, var(--foreground) 12%, transparent)",
+            backdropFilter: "blur(16px)",
             padding: "0.875rem 1rem",
           },
         }}
