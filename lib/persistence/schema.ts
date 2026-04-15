@@ -62,6 +62,7 @@ export const persistedStudyTimerStateV1Schema = z.object({
 })
 
 // why is there a new schema? is this for v2? why is there v2? so i can migrate back to v1 if needed?
+// ANSWER: Yes, this new schema is for v2 because the persisted data shape changed to include totalCompletedFocusSessions. The v1 schema is kept only so old saved data can be recognized and upgraded forward to v2; it is not for migrating backward to v1.
 export const persistedStudyTimerStateSchema = z.object({
   version: z.literal(2),
   settings: settingsSchema,

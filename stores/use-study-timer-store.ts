@@ -36,6 +36,7 @@ function selectPersistedState(
 }
 
 // so this function is increasing the number of dots by 1 i assume? why return 1 or 0?
+// ANSWER: This helper does not render dots directly; it detects the exact moment a focus phase transitions into completed and returns 1 only for that one completion edge, otherwise 0. The store uses that 1-or-0 result to increment totalCompletedFocusSessions once per fully completed focus session, including recovery after reloads.
 function getCompletedFocusIncrement(
   previousState: StudyTimerStore,
   nextTimer: StudyTimerStore["timer"]
@@ -49,6 +50,7 @@ function getCompletedFocusIncrement(
 }
 
 // this is getting the number completed sessions by looking at the timer and comparing what is the previous state..?? how is previousState.timer and nextTimer.phase diff if both are from the same store..? who is using this function?
+// ANSWER: previousState is the store state before transitionTimerState() handles an event, while nextTimer is the reducer result after that same event, so they can differ even inside one function call. This helper is used by advanceToNextPhase() and hydrateAndRecover() to reset dots to 0 after a completed long break restarts the cycle, and otherwise cap the filled dots to sessionsBeforeLongBreak with Math.min so settings changes cannot show more filled dots than total dots.
 function getNextCycleCompletedSessions(
   previousState: StudyTimerStore,
   nextTimer: StudyTimerStore["timer"]

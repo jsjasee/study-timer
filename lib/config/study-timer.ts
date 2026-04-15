@@ -11,6 +11,7 @@ import type {
 // SCAFFOLD: Centralized constants keep the app shell and persistence layer aligned.
 export const STORAGE_KEY = "study-timer:v1"
 export const CURRENT_PERSISTENCE_VERSION = 2 as const // what is this current_persistence version used for?
+// ANSWER: This versions the persisted data shape in localStorage, not the Zustand store itself. saveState() writes this version into the saved JSON, and migratePersistedState() uses it to detect whether older persisted data needs to be upgraded before the app uses it.
 
 export const LIMITS = {
   // the lower limit is always 1, below denotes the upper limit.

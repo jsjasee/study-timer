@@ -27,6 +27,7 @@ function normalizeCycleCompletedSessions(
 
 // SCAFFOLD: Future persistence versions should migrate through this module instead of ad-hoc parsing in the store.
 // why are we migrating to version 2..? what is this migrate persisted state doing and why is it key to the dots feature? if it is success...?
+// ANSWER: We migrate to v2 because the persisted localStorage shape added totalCompletedFocusSessions for the Stats tab, while timer.completedFocusSessions now represents only current-cycle dot progress. This function validates saved data with safeParse, accepts v2 directly when it already matches the new shape, or upgrades v1 by splitting the old single counter into lifetime total and per-cycle progress so existing users keep meaningful dots and stats instead of losing their saved state.
 export function migratePersistedState(
   rawState: unknown
 ): PersistedStudyTimerState | null {
