@@ -11,6 +11,7 @@ import { SessionProgressDots } from "@/components/timer/session-progress-dots"
 import { TimerControls } from "@/components/timer/timer-controls"
 import { TimerDisplay } from "@/components/timer/timer-display"
 import { AuroraBackground } from "@/components/ui/aurora-background"
+import { BackgroundScene } from "@/components/ui/background-scene"
 import { useStudyTimerBootstrap } from "@/hooks/use-study-timer-bootstrap"
 import { getDisplayRemainingSeconds } from "@/lib/timer/timer-helpers"
 import { useStudyTimerStore } from "@/stores/use-study-timer-store"
@@ -78,10 +79,11 @@ export function StudyTimerShell() {
   }
 
   return (
-    <div className="relative min-h-dvh overflow-hidden bg-background">
+    <div className="relative min-h-dvh overflow-hidden bg-background isolate">
+      <BackgroundScene />
       <AuroraBackground />
 
-      <main className="relative z-10 mx-auto flex h-dvh w-full flex-col overflow-hidden px-3 py-2 sm:max-w-xl sm:px-6 sm:py-4 lg:max-w-2xl">
+      <main className="relative z-20 mx-auto flex h-dvh w-full flex-col overflow-hidden px-3 py-2 sm:max-w-xl sm:px-6 sm:py-4 lg:max-w-2xl">
         <AppHeader
           theme={settings.theme}
           onToggleTheme={() =>
@@ -101,25 +103,27 @@ export function StudyTimerShell() {
           />
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-1 overflow-hidden py-1 sm:gap-3 sm:py-2">
-          <TimerDisplay
-            phase={timer.phase}
-            remainingSeconds={displayRemainingSeconds}
-            totalSeconds={totalSeconds}
-            status={timer.status}
-          />
-          <SessionProgressDots
-            phase={timer.phase}
-            filledCount={timer.completedFocusSessions}
-            totalCount={settings.sessionsBeforeLongBreak}
-          />
-          <TimerControls
-            status={timer.status}
-            onStart={startTimer}
-            onPause={pauseTimer}
-            onReset={resetCurrentPhase}
-            onAdvance={advanceToNextPhase}
-          />
+        <div className="flex min-h-0 flex-1 flex-col justify-center py-1 sm:py-2">
+          <div className="study-timer-glass-panel flex min-h-0 flex-1 flex-col items-center justify-center gap-1 overflow-hidden px-4 py-5 sm:gap-3 sm:px-8 sm:py-8">
+            <TimerDisplay
+              phase={timer.phase}
+              remainingSeconds={displayRemainingSeconds}
+              totalSeconds={totalSeconds}
+              status={timer.status}
+            />
+            <SessionProgressDots
+              phase={timer.phase}
+              filledCount={timer.completedFocusSessions}
+              totalCount={settings.sessionsBeforeLongBreak}
+            />
+            <TimerControls
+              status={timer.status}
+              onStart={startTimer}
+              onPause={pauseTimer}
+              onReset={resetCurrentPhase}
+              onAdvance={advanceToNextPhase}
+            />
+          </div>
         </div>
       </main>
 

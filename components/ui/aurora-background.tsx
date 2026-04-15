@@ -13,7 +13,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
     <div
       aria-hidden="true"
       className={cn(
-        "pointer-events-none fixed inset-0 overflow-hidden",
+        "pointer-events-none fixed inset-0 z-10 overflow-hidden print:hidden",
         className
       )}
     >
