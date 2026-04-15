@@ -48,7 +48,7 @@ export function DonutTimer({
   const isRunning = status === "running"
 
   return (
-    <div className="relative grid place-items-center">
+    <div className="relative grid aspect-square w-full max-w-[min(65vw,280px)] max-h-[min(65vw,280px)] place-items-center self-center sm:max-w-[min(50vw,340px)] sm:max-h-[min(50vw,340px)]">
       <div
         aria-hidden="true"
         className={cn(
@@ -77,7 +77,7 @@ export function DonutTimer({
 
       <svg
         viewBox="0 0 200 200"
-        className="relative z-10 size-[min(68vw,41dvh,23rem)] -rotate-90 overflow-visible drop-shadow-[0_0_38px_color-mix(in_oklch,var(--foreground)_7%,transparent)] sm:size-[min(62vw,46dvh,25rem)]"
+        className="relative z-10 size-full -rotate-90 overflow-visible drop-shadow-[0_0_38px_color-mix(in_oklch,var(--foreground)_7%,transparent)]"
         role="img"
         aria-label={`${phase} timer showing ${formatRemainingTime(clampedRemainingSeconds)} remaining`}
       >
@@ -111,7 +111,7 @@ export function DonutTimer({
       </svg>
 
       <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center">
-        <div className="timer-digits text-[clamp(2.8rem,10vw,5rem)] font-semibold tracking-[-0.08em] text-foreground drop-shadow-[0_0_18px_color-mix(in_oklch,var(--foreground)_10%,transparent)]">
+        <div className="timer-digits text-4xl font-semibold tracking-[-0.08em] text-foreground drop-shadow-[0_0_18px_color-mix(in_oklch,var(--foreground)_10%,transparent)] sm:text-5xl md:text-6xl">
           {formatRemainingTime(clampedRemainingSeconds)}
         </div>
         <PhaseBadge phase={phase} />

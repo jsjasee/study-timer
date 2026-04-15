@@ -30,7 +30,7 @@ export function SessionProgressDots({
   // what does Array.from() do here ...?
   return (
     <div
-      className="flex min-h-4 flex-wrap items-center justify-center gap-2"
+      className="flex min-h-4 w-full max-w-full flex-wrap items-center justify-center gap-1.5 sm:gap-2"
       aria-label={`Session progress: ${safeFilledCount} of ${safeTotalCount} focus sessions completed`}
     >
       {Array.from({ length: safeTotalCount }, (_, index) => {

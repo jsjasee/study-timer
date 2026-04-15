@@ -21,7 +21,7 @@ export function PhaseBadge({ phase }: PhaseBadgeProps) {
   return (
     <Badge
       variant={variantByPhase[phase]}
-      className="mt-2 border-white/20 bg-white/55 px-3 py-1 text-[0.65rem] tracking-[0.18em] text-foreground shadow-[0_10px_30px_-22px_color-mix(in_oklch,var(--foreground)_40%,transparent)] backdrop-blur-md dark:border-white/10 dark:bg-white/10"
+      className="mt-1.5 border-white/20 bg-white/55 px-2.5 py-0.5 text-[0.65rem] tracking-[0.18em] text-foreground shadow-[0_10px_30px_-22px_color-mix(in_oklch,var(--foreground)_40%,transparent)] backdrop-blur-md sm:mt-2 sm:px-3 sm:py-1 sm:text-xs dark:border-white/10 dark:bg-white/10"
     >
       {labelByPhase[phase]}
     </Badge>
