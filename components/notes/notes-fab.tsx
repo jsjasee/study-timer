@@ -1,4 +1,4 @@
-import { NotebookPen } from "lucide-react"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 
@@ -11,11 +11,19 @@ export function NotesFab({ onClick }: NotesFabProps) {
     <Button
       type="button"
       size="icon-lg"
-      className="fixed right-3 bottom-16 z-40 size-12 rounded-full border border-white/20 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary)_82%,white_18%),color-mix(in_oklch,var(--accent)_72%,white_28%))] text-primary-foreground shadow-[0_24px_48px_-24px_color-mix(in_oklch,var(--foreground)_60%,transparent)] hover:brightness-105 sm:right-5 sm:bottom-5 dark:border-white/10"
+      className="fixed right-5 bottom-16 z-40 size-12 rounded-full border-0 bg-transparent p-0 transition-all duration-300 ease-in-out hover:scale-[1.08] active:scale-95 sm:right-7 sm:bottom-5"
       onClick={onClick}
       aria-label="Open notes panel"
     >
-      <NotebookPen className="size-5" />
+      <span className="relative block size-full">
+        <Image
+          src="/kuromi.webp"
+          alt="Notes"
+          fill
+          sizes="48px"
+          className="object-contain scale-[2] drop-shadow-[0_0_8px_color-mix(in_oklch,var(--accent)_28%,transparent)] transition-all duration-300 ease-in-out group-hover/button:drop-shadow-[0_0_18px_color-mix(in_oklch,var(--accent)_58%,transparent)] group-active/button:drop-shadow-[0_0_24px_color-mix(in_oklch,var(--accent)_72%,transparent)] dark:drop-shadow-[0_0_10px_color-mix(in_oklch,var(--accent)_38%,transparent)] dark:group-hover/button:drop-shadow-[0_0_22px_color-mix(in_oklch,var(--accent)_70%,transparent)] dark:group-active/button:drop-shadow-[0_0_28px_color-mix(in_oklch,var(--accent)_82%,transparent)]"
+        />
+      </span>
     </Button>
   )
 }
