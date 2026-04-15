@@ -90,10 +90,14 @@
   --ring-glow-short: oklch(0.7 0.11 185);
   --ring-glow-long: oklch(0.68 0.09 145);
   --ring-track: oklch(0 0 0 / 0.06);
-  --aurora-base: color-mix(in oklch, var(--accent) 16%, transparent);
-  --aurora-blob-1: color-mix(in oklch, var(--accent) 22%, transparent);
-  --aurora-blob-2: color-mix(in oklch, var(--primary) 18%, transparent);
-  --aurora-blob-3: color-mix(in oklch, oklch(0.9 0.05 40) 18%, transparent);
+  --ring-track-strong: color-mix(in oklch, white 92%, var(--background) 8%);
+  --aurora-base: color-mix(in oklch, var(--accent) 26%, transparent);
+  --aurora-blob-1: color-mix(in oklch, var(--accent) 36%, transparent);
+  --aurora-blob-2: color-mix(in oklch, var(--primary) 28%, transparent);
+  --aurora-blob-3: color-mix(in oklch, oklch(0.9 0.05 40) 26%, transparent);
+  --aurora-blob-4: color-mix(in oklch, oklch(0.66 0.14 310) 24%, transparent);
+  --aurora-cafe-glow: color-mix(in oklch, var(--accent) 34%, transparent);
+  --aurora-window: color-mix(in oklch, white 16%, transparent);
 }
 
 .dark {
@@ -135,10 +139,14 @@
   --ring-glow-short: oklch(0.78 0.13 185);
   --ring-glow-long: oklch(0.75 0.1 145);
   --ring-track: oklch(1 0 0 / 0.08);
-  --aurora-base: color-mix(in oklch, var(--primary) 14%, transparent);
-  --aurora-blob-1: color-mix(in oklch, var(--primary) 20%, transparent);
-  --aurora-blob-2: color-mix(in oklch, var(--accent) 14%, transparent);
-  --aurora-blob-3: color-mix(in oklch, oklch(0.62 0.08 250) 16%, transparent);
+  --ring-track-strong: color-mix(in oklch, white 90%, var(--background) 10%);
+  --aurora-base: color-mix(in oklch, var(--primary) 22%, transparent);
+  --aurora-blob-1: color-mix(in oklch, var(--primary) 34%, transparent);
+  --aurora-blob-2: color-mix(in oklch, var(--accent) 24%, transparent);
+  --aurora-blob-3: color-mix(in oklch, oklch(0.62 0.08 250) 24%, transparent);
+  --aurora-blob-4: color-mix(in oklch, oklch(0.7 0.14 290) 24%, transparent);
+  --aurora-cafe-glow: color-mix(in oklch, var(--accent) 28%, transparent);
+  --aurora-window: color-mix(in oklch, white 10%, transparent);
 }
 
 @layer base {
@@ -152,11 +160,13 @@
 
   body {
     @apply min-h-full bg-background text-foreground;
-    background-image: linear-gradient(
-      180deg,
-      var(--background),
-      color-mix(in oklch, var(--background) 94%, black 6%)
-    );
+    background-image:
+      radial-gradient(circle at 50% -12%, color-mix(in oklch, var(--aurora-cafe-glow) 82%, transparent), transparent 34%),
+      linear-gradient(
+        180deg,
+        color-mix(in oklch, var(--background) 94%, black 6%),
+        var(--background)
+      );
   }
 }
 
@@ -166,8 +176,8 @@
 
 .aurora-blob {
   background: radial-gradient(circle at center, var(--aurora-blob-1), transparent 68%);
-  filter: blur(44px);
-  opacity: 0.55;
+  filter: blur(30px);
+  opacity: 0.82;
   will-change: transform;
 }
 
@@ -177,6 +187,30 @@
 
 .aurora-blob-accent {
   background: radial-gradient(circle at center, var(--aurora-blob-3), transparent 68%);
+}
+
+.aurora-blob-violet {
+  background: radial-gradient(circle at center, var(--aurora-blob-4), transparent 68%);
+}
+
+.aurora-cafe-glow {
+  background: radial-gradient(
+    circle at 50% 10%,
+    var(--aurora-cafe-glow),
+    transparent 72%
+  );
+  filter: blur(32px);
+  opacity: 0.9;
+}
+
+.aurora-window-haze {
+  background: radial-gradient(
+    ellipse at center,
+    var(--aurora-window),
+    transparent 74%
+  );
+  filter: blur(36px);
+  opacity: 0.38;
 }
 
 .shimmer-button {
@@ -211,11 +245,11 @@
 .donut-glow {
   background: radial-gradient(
     circle at center,
-    color-mix(in oklch, var(--donut-glow-color) 26%, transparent),
+    color-mix(in oklch, var(--donut-glow-color) 38%, transparent),
     transparent 62%
   );
-  filter: blur(20px);
-  opacity: 0.9;
+  filter: blur(14px);
+  opacity: 1;
   transition: background 0.3s ease;
 }
 
@@ -223,27 +257,41 @@
   animation: donut-breathe 4.8s ease-in-out infinite;
 }
 
+.donut-halo {
+  background: radial-gradient(
+    circle at center,
+    color-mix(in oklch, var(--donut-glow-color) 18%, transparent),
+    transparent 58%
+  );
+  filter: blur(30px);
+  opacity: 0.95;
+}
+
+.donut-halo-running {
+  animation: donut-halo-breathe 5.2s ease-in-out infinite;
+}
+
 .donut-orbit {
   background: conic-gradient(
     from 0deg,
-    transparent 0deg 32deg,
-    color-mix(in oklch, var(--donut-glow-color) 82%, transparent) 70deg,
-    transparent 112deg 235deg,
-    color-mix(in oklch, var(--donut-glow-color) 35%, transparent) 280deg,
+    transparent 0deg 18deg,
+    color-mix(in oklch, var(--donut-glow-color) 92%, transparent) 48deg,
+    transparent 92deg 210deg,
+    color-mix(in oklch, var(--donut-glow-color) 54%, transparent) 258deg,
     transparent 330deg 360deg
   );
-  filter: blur(7px);
-  opacity: 0.5;
+  filter: blur(5px);
+  opacity: 0.78;
   transition: opacity 0.3s ease, background 0.3s ease;
   -webkit-mask: radial-gradient(
     farthest-side,
-    transparent calc(100% - 20px),
-    #000 calc(100% - 16px)
+    transparent calc(100% - 18px),
+    #000 calc(100% - 13px)
   );
   mask: radial-gradient(
     farthest-side,
-    transparent calc(100% - 20px),
-    #000 calc(100% - 16px)
+    transparent calc(100% - 18px),
+    #000 calc(100% - 13px)
   );
 }
 
@@ -252,7 +300,24 @@
 }
 
 .donut-orbit-idle {
-  opacity: 0.22;
+  opacity: 0.4;
+}
+
+.next-phase-button::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg,
+    color-mix(in oklch, var(--accent) 92%, white 8%),
+    color-mix(in oklch, var(--primary) 28%, var(--accent) 72%),
+    color-mix(in oklch, var(--accent) 92%, white 8%)
+  );
+  z-index: -1;
+  opacity: 0.9;
+  filter: blur(6px);
+  animation: next-phase-rim 3.2s linear infinite;
 }
 
 @keyframes shimmer-sweep {
@@ -279,6 +344,19 @@
   }
 }
 
+@keyframes donut-halo-breathe {
+  0%,
+  100% {
+    transform: scale(0.96);
+    opacity: 0.72;
+  }
+
+  50% {
+    transform: scale(1.035);
+    opacity: 1;
+  }
+}
+
 @keyframes donut-orbit-spin {
   from {
     transform: rotate(0deg);
@@ -286,6 +364,16 @@
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes next-phase-rim {
+  from {
+    filter: blur(6px) hue-rotate(0deg);
+  }
+
+  to {
+    filter: blur(6px) hue-rotate(18deg);
   }
 }
 

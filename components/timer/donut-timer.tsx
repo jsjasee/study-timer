@@ -25,6 +25,12 @@ const glowClassNameByPhase: Record<TimerPhase, string> = {
   longBreak: "donut-glow-long",
 }
 
+const ringStrokeByPhase: Record<TimerPhase, string> = {
+  focus: "var(--ring-focus)",
+  shortBreak: "var(--ring-short)",
+  longBreak: "var(--ring-long)",
+}
+
 export function DonutTimer({
   phase,
   remainingSeconds,
@@ -46,6 +52,14 @@ export function DonutTimer({
       <div
         aria-hidden="true"
         className={cn(
+          "donut-halo absolute inset-[6%] rounded-full",
+          glowClassNameByPhase[phase],
+          isRunning && "donut-halo-running"
+        )}
+      />
+      <div
+        aria-hidden="true"
+        className={cn(
           "donut-glow absolute inset-[9%] rounded-full",
           glowClassNameByPhase[phase],
           isRunning && "donut-glow-running"
@@ -63,7 +77,7 @@ export function DonutTimer({
 
       <svg
         viewBox="0 0 200 200"
-        className="relative z-10 size-[min(68vw,41dvh,23rem)] -rotate-90 overflow-visible sm:size-[min(62vw,46dvh,25rem)]"
+        className="relative z-10 size-[min(68vw,41dvh,23rem)] -rotate-90 overflow-visible drop-shadow-[0_0_38px_color-mix(in_oklch,var(--foreground)_7%,transparent)] sm:size-[min(62vw,46dvh,25rem)]"
         role="img"
         aria-label={`${phase} timer showing ${formatRemainingTime(clampedRemainingSeconds)} remaining`}
       >
@@ -72,7 +86,8 @@ export function DonutTimer({
           cy="100"
           r={radius}
           fill="none"
-          stroke="var(--ring-track)"
+          stroke="var(--ring-track-strong)"
+          strokeOpacity="0.95"
           strokeWidth="12"
         />
         <circle
@@ -80,7 +95,7 @@ export function DonutTimer({
           cy="100"
           r={radius}
           fill="none"
-          stroke="currentColor"
+          stroke={ringStrokeByPhase[phase]}
           strokeWidth="12"
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -89,11 +104,14 @@ export function DonutTimer({
             "transition-[stroke-dashoffset,stroke] duration-1000 ease-linear",
             ringClassNameByPhase[phase]
           )}
+          style={{
+            filter: `drop-shadow(0 0 10px ${ringStrokeByPhase[phase]}) drop-shadow(0 0 22px color-mix(in oklch, ${ringStrokeByPhase[phase]} 46%, transparent))`,
+          }}
         />
       </svg>
 
       <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center">
-        <div className="timer-digits text-[clamp(2.8rem,10vw,5rem)] font-semibold tracking-[-0.08em] text-foreground">
+        <div className="timer-digits text-[clamp(2.8rem,10vw,5rem)] font-semibold tracking-[-0.08em] text-foreground drop-shadow-[0_0_18px_color-mix(in_oklch,var(--foreground)_10%,transparent)]">
           {formatRemainingTime(clampedRemainingSeconds)}
         </div>
         <PhaseBadge phase={phase} />

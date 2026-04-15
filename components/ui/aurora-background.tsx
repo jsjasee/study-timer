@@ -17,42 +17,57 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
         className
       )}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--aurora-base),transparent_58%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-8%,var(--aurora-base),transparent_48%)]" />
+      <div className="aurora-cafe-glow absolute inset-x-0 top-[-8%] h-[34vh]" />
+      <div className="aurora-window-haze absolute inset-x-[8%] top-[18%] h-[38vh] rounded-[50%]" />
       <motion.div
-        className="aurora-blob absolute left-[-18%] top-[-10%] h-[42vh] w-[42vh] rounded-full"
+        className="aurora-blob absolute left-[-8%] top-[-4%] h-[52vh] w-[52vh] rounded-full"
         animate={{
-          x: ["0%", "8%", "0%"],
-          y: ["0%", "6%", "0%"],
+          x: ["0%", "10%", "0%"],
+          y: ["0%", "7%", "0%"],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          duration: 24,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="aurora-blob aurora-blob-secondary absolute right-[-10%] top-[2%] h-[46vh] w-[46vh] rounded-full"
+        animate={{
+          x: ["0%", "-8%", "0%"],
+          y: ["0%", "8%", "0%"],
+          scale: [1, 1.14, 1],
+        }}
+        transition={{
+          duration: 28,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="aurora-blob aurora-blob-accent absolute left-[16%] top-[10%] h-[32vh] w-[32vh] rounded-full"
+        animate={{
+          x: ["0%", "-6%", "0%"],
+          y: ["0%", "11%", "0%"],
           scale: [1, 1.08, 1],
         }}
         transition={{
-          duration: 26,
+          duration: 32,
           repeat: Infinity,
           ease: "easeInOut",
         }}
       />
       <motion.div
-        className="aurora-blob aurora-blob-secondary absolute right-[-14%] top-[4%] h-[36vh] w-[36vh] rounded-full"
+        className="aurora-blob aurora-blob-violet absolute right-[14%] top-[30%] h-[28vh] w-[28vh] rounded-full"
         animate={{
-          x: ["0%", "-7%", "0%"],
-          y: ["0%", "7%", "0%"],
-          scale: [1, 1.12, 1],
+          x: ["0%", "-6%", "0%"],
+          y: ["0%", "6%", "0%"],
+          scale: [1, 1.05, 1],
         }}
         transition={{
-          duration: 30,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="aurora-blob aurora-blob-accent absolute left-[24%] top-[14%] h-[24vh] w-[24vh] rounded-full"
-        animate={{
-          x: ["0%", "-5%", "0%"],
-          y: ["0%", "10%", "0%"],
-          scale: [1, 1.06, 1],
-        }}
-        transition={{
-          duration: 34,
+          duration: 36,
           repeat: Infinity,
           ease: "easeInOut",
         }}
