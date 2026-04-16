@@ -14,7 +14,7 @@ const inter = Inter({
   display: "swap",
 })
 
-const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Study Timer"
+const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Study Cafe"
 const themeInitScript = `(() => {
   const storageKey = ${JSON.stringify(STORAGE_KEY)};
   const fallbackState = ${JSON.stringify(createDefaultPersistedState()).replace(/</g, "\\u003c")};
@@ -43,9 +43,9 @@ const themeInitScript = `(() => {
 })();`
 
 export const metadata: Metadata = {
-  title: `${appName} Scaffold`,
+  title: `${appName}`,
   description:
-    "Scaffolded study timer shell built with Next.js, Tailwind CSS, Zustand, Zod, and shadcn/ui patterns.",
+    "Study timer designed to maximise deep work, built with Next.js, Tailwind CSS, Zustand, Zod, and shadcn/ui patterns.",
 }
 
 export default function RootLayout({
