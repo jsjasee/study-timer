@@ -17,7 +17,7 @@ export function BackgroundScene({ className }: BackgroundSceneProps) {
       <img
         alt=""
         src="/night-mode.webp"
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="bg-scene-image absolute inset-0 h-full w-full object-cover object-center"
         loading="eager"
         decoding="async"
         fetchPriority="high"
@@ -26,7 +26,7 @@ export function BackgroundScene({ className }: BackgroundSceneProps) {
       <img
         alt=""
         src="/day-mode.webp"
-        className="absolute inset-0 h-full w-full object-cover object-center opacity-100 transition-opacity duration-1000 ease-in-out dark:opacity-0"
+        className="bg-scene-image bg-scene-theme-image absolute inset-0 h-full w-full object-cover object-center opacity-100 transition-opacity duration-1000 ease-in-out dark:opacity-0"
         loading="eager"
         decoding="async"
         fetchPriority="high"
