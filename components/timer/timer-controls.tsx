@@ -27,7 +27,7 @@ export function TimerControls({
       {isCompleted ? (
         <ShimmerButton
           size="lg"
-          className="next-phase-button h-9 px-4 text-sm rounded-full border border-[color:var(--accent)] bg-[linear-gradient(135deg,color-mix(in_oklch,var(--accent)_88%,white_12%),color-mix(in_oklch,var(--primary)_26%,var(--accent)_74%))] text-[var(--accent-foreground)] shadow-[0_0_0_1px_color-mix(in_oklch,var(--accent)_65%,transparent),0_0_24px_color-mix(in_oklch,var(--ring-glow-focus)_40%,transparent),0_18px_40px_-18px_color-mix(in_oklch,var(--ring-glow-focus)_65%,transparent)] hover:brightness-105 sm:h-10 sm:px-6"
+          className="next-phase-button h-9 px-4 text-sm rounded-full border border-accent bg-[linear-gradient(135deg,color-mix(in_oklch,var(--accent)_88%,white_12%),color-mix(in_oklch,var(--primary)_26%,var(--accent)_74%))] text-accent-foreground shadow-[0_0_0_1px_color-mix(in_oklch,var(--accent)_65%,transparent),0_0_24px_color-mix(in_oklch,var(--ring-glow-focus)_40%,transparent),0_18px_40px_-18px_color-mix(in_oklch,var(--ring-glow-focus)_65%,transparent)] hover:brightness-105 sm:h-10 sm:px-6"
           shimmerClassName="opacity-100"
           onClick={onAdvance}
         >
