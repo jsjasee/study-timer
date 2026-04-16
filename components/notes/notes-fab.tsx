@@ -11,7 +11,7 @@ export function NotesFab({ onClick }: NotesFabProps) {
     <Button
       type="button"
       size="icon-lg"
-      className="kuromi-fab fixed right-5 bottom-16 z-40 size-12 overflow-visible rounded-full border-0 bg-transparent p-0 transition-all duration-300 ease-in-out hover:scale-[1.08] active:scale-95 sm:right-7 sm:bottom-5"
+      className="kuromi-fab fixed right-5 bottom-20 z-40 size-12 overflow-visible rounded-full border-0 bg-transparent p-0 transition-all duration-300 ease-in-out hover:scale-[1.08] active:scale-95 sm:right-7 sm:bottom-5"
       onClick={onClick}
       aria-label="Open notes panel"
     >
