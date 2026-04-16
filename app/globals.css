@@ -255,6 +255,155 @@
   animation: shimmer-sweep 3.2s ease-in-out infinite;
 }
 
+.kuromi-fab {
+  position: fixed;
+  isolation: isolate;
+  box-shadow:
+    0 0 10px 4px rgba(255, 105, 180, 0.48),
+    0 0 26px 12px rgba(255, 105, 180, 0.34),
+    0 0 54px 24px rgba(255, 105, 180, 0.18);
+  animation: kuromi-glow-pulse 2.8s ease-in-out infinite;
+}
+
+.kuromi-fab::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  z-index: -1;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 105, 180, 0.7) 0%,
+    rgba(255, 105, 180, 0.52) 28%,
+    rgba(255, 105, 180, 0.28) 52%,
+    rgba(255, 105, 180, 0.12) 68%,
+    rgba(255, 105, 180, 0) 82%
+  );
+  filter: blur(14px);
+  opacity: 0.95;
+  transform: scale(1);
+  pointer-events: none;
+  animation: kuromi-aura-pulse 2.8s ease-in-out infinite;
+}
+
+.dark .kuromi-fab {
+  box-shadow:
+    0 0 14px 6px rgba(255, 105, 180, 0.62),
+    0 0 34px 16px rgba(255, 105, 180, 0.44),
+    0 0 70px 30px rgba(255, 105, 180, 0.24);
+  animation-name: kuromi-glow-pulse-dark;
+}
+
+.dark .kuromi-fab::before {
+  background: radial-gradient(
+    circle,
+    rgba(255, 105, 180, 0.85) 0%,
+    rgba(255, 105, 180, 0.62) 28%,
+    rgba(255, 105, 180, 0.36) 52%,
+    rgba(255, 105, 180, 0.16) 68%,
+    rgba(255, 105, 180, 0) 82%
+  );
+  opacity: 1;
+  animation-name: kuromi-aura-pulse-dark;
+}
+
+.kuromi-fab:hover {
+  animation: none;
+  box-shadow:
+    0 0 18px 8px rgba(255, 105, 180, 0.68),
+    0 0 40px 20px rgba(255, 105, 180, 0.48),
+    0 0 78px 34px rgba(255, 105, 180, 0.26);
+}
+
+.kuromi-fab:hover::before {
+  animation: none;
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+.dark .kuromi-fab:hover {
+  box-shadow:
+    0 0 22px 10px rgba(255, 105, 180, 0.8),
+    0 0 46px 22px rgba(255, 105, 180, 0.56),
+    0 0 86px 38px rgba(255, 105, 180, 0.3);
+}
+
+.dark .kuromi-fab:hover::before {
+  opacity: 1;
+}
+
+.kuromi-fab:active {
+  box-shadow:
+    0 0 24px 12px rgba(255, 105, 180, 0.86),
+    0 0 52px 26px rgba(255, 105, 180, 0.62),
+    0 0 96px 44px rgba(255, 105, 180, 0.36);
+}
+
+.kuromi-fab:active::before {
+  opacity: 1;
+  transform: scale(1.12);
+}
+
+@keyframes kuromi-glow-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 10px 4px rgba(255, 105, 180, 0.48),
+      0 0 26px 12px rgba(255, 105, 180, 0.34),
+      0 0 54px 24px rgba(255, 105, 180, 0.18);
+  }
+
+  50% {
+    box-shadow:
+      0 0 16px 7px rgba(255, 105, 180, 0.62),
+      0 0 36px 16px rgba(255, 105, 180, 0.42),
+      0 0 68px 30px rgba(255, 105, 180, 0.24);
+  }
+}
+
+@keyframes kuromi-glow-pulse-dark {
+  0%,
+  100% {
+    box-shadow:
+      0 0 14px 6px rgba(255, 105, 180, 0.62),
+      0 0 34px 16px rgba(255, 105, 180, 0.44),
+      0 0 70px 30px rgba(255, 105, 180, 0.24);
+  }
+
+  50% {
+    box-shadow:
+      0 0 20px 9px rgba(255, 105, 180, 0.78),
+      0 0 44px 22px rgba(255, 105, 180, 0.54),
+      0 0 84px 38px rgba(255, 105, 180, 0.32);
+  }
+}
+
+@keyframes kuromi-aura-pulse {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes kuromi-aura-pulse-dark {
+  0%,
+  100% {
+    opacity: 0.96;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
 .donut-glow-focus {
   --donut-glow-color: var(--ring-glow-focus);
 }

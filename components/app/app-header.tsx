@@ -23,11 +23,11 @@ export function AppHeader({
         className="absolute inset-x-[14%] top-[-60%] h-16 rounded-full bg-[radial-gradient(circle,color-mix(in_oklch,var(--accent)_22%,transparent),transparent_72%)] blur-2xl"
       />
       <div className="flex min-w-0 items-center gap-2.5">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-white/35 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--card)_72%,white_28%),color-mix(in_oklch,var(--card)_56%,transparent))] text-accent shadow-[0_0_0_1px_color-mix(in_oklch,var(--accent)_24%,transparent),0_10px_26px_-14px_color-mix(in_oklch,var(--accent)_55%,transparent)] backdrop-blur-md dark:border-white/10 dark:bg-[linear-gradient(180deg,color-mix(in_oklch,var(--card)_88%,white_12%),color-mix(in_oklch,var(--card)_36%,transparent))]">
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-white/35 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--card)_52%,white_8%),color-mix(in_oklch,var(--card)_38%,transparent))] text-[color-mix(in_oklch,var(--accent-foreground)_82%,var(--accent)_18%)] shadow-[0_0_0_1px_color-mix(in_oklch,var(--accent)_24%,transparent),0_10px_26px_-14px_color-mix(in_oklch,var(--accent)_55%,transparent)] backdrop-blur-md dark:border-white/10 dark:bg-[linear-gradient(180deg,color-mix(in_oklch,var(--card)_88%,white_12%),color-mix(in_oklch,var(--card)_36%,transparent))] dark:text-accent">
           <Coffee className="size-4" />
         </div>
         <h1 className="truncate text-[1.1rem] font-semibold tracking-[-0.05em] text-foreground sm:text-[1.3rem]">
-          <span className="bg-[linear-gradient(135deg,color-mix(in_oklch,var(--accent)_90%,white_10%)_0%,color-mix(in_oklch,var(--primary)_74%,white_26%)_65%,color-mix(in_oklch,var(--ring-short)_54%,white_46%)_100%)] bg-clip-text text-transparent drop-shadow-[0_0_20px_color-mix(in_oklch,var(--accent)_32%,transparent)]">
+          <span className="bg-[linear-gradient(135deg,color-mix(in_oklch,var(--accent-foreground)_88%,var(--accent)_12%)_0%,color-mix(in_oklch,var(--primary)_88%,black_12%)_65%,color-mix(in_oklch,var(--ring-short)_78%,black_22%)_100%)] bg-clip-text text-transparent drop-shadow-[0_0_20px_color-mix(in_oklch,var(--accent)_32%,transparent)] dark:bg-[linear-gradient(135deg,color-mix(in_oklch,var(--accent)_90%,white_10%)_0%,color-mix(in_oklch,var(--primary)_74%,white_26%)_65%,color-mix(in_oklch,var(--ring-short)_54%,white_46%)_100%)]">
             Study Cafe
           </span>
         </h1>
