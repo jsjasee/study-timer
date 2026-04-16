@@ -18,6 +18,7 @@ import type {
 } from "@/types/study-timer"
 
 let persistTimeout: number | null = null // this is the timeoutID
+let deferPersistTimeout: number | null = null
 
 // i guess this function is returning all the settings of the inputted state.. from local storage since the stuff is stored there? where is this used? for what?
 // ANSWER: This does not read localStorage; it picks only the persistable fields from the full Zustand store. It is used right before saving so UI state/functions are excluded. Refer to Notion for more info.
@@ -71,10 +72,30 @@ function getNextCycleCompletedSessions(
   )
 }
 
-// this function accepts a state and then calls a function to SAVE the STATE, the input is just the state (aka all the stuff, the timer, task, notes etc) that it wants to save?? its just a wrapper function.
-// ANSWER: Yes, this is a thin wrapper. It takes the full store state, filters it through selectPersistedState, then saves only the persistable data. Refer to Notion for more info.
+// This writes the latest persistable slice synchronously and cancels any queued deferred save so an older snapshot cannot overwrite a newer immediate save.
 function persistImmediately(state: StudyTimerStore) {
+  if (typeof window !== "undefined" && deferPersistTimeout !== null) {
+    window.clearTimeout(deferPersistTimeout)
+    deferPersistTimeout = null
+  }
+
   saveState(selectPersistedState(state))
+}
+
+// This defers non-critical persistence off the interaction path and debounces rapid taps down to the latest store snapshot only.
+function deferPersist(state: StudyTimerStore) {
+  if (typeof window === "undefined") {
+    return
+  }
+
+  if (deferPersistTimeout !== null) {
+    window.clearTimeout(deferPersistTimeout)
+  }
+
+  deferPersistTimeout = window.setTimeout(() => {
+    saveState(selectPersistedState(state))
+    deferPersistTimeout = null
+  }, 250)
 }
 
 // if window is somehow undefined... do nothing (when will this happen? i suppose one device is closed or its hacked or something..?) if there a timeout ID, we want to clear it first (because we have reached the time), then we set another 250ms before we save the state. why not use persistImmediately? since it's literally doing the same thing, can replace 'saveState(selectPersistedState(state))'
@@ -91,6 +112,11 @@ function schedulePersist(state: StudyTimerStore) {
   persistTimeout = window.setTimeout(() => {
     saveState(selectPersistedState(state))
   }, 250)
+}
+
+// This gives non-React code a safe way to flush the current Zustand state to storage during page lifecycle events.
+export function flushPersistedStudyTimerState() {
+  persistImmediately(useStudyTimerStore.getState())
 }
 
 // so here i am creating the default options to save into local storage i suppose?
@@ -123,6 +149,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     // ANSWER: get() returns the full Zustand store, not a mini store. persistImmediately then filters that full store down to the persistable fields before saving. Refer to Notion for more info.
   },
   pauseTimer: () => {
+    // This pauses the timer in memory first so the UI responds immediately, then queues persistence after the interaction finishes.
     const currentState = get()
     const nextTimer = transitionTimerState({
       timer: currentState.timer,
@@ -131,9 +158,10 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     }) //
 
     set({ timer: nextTimer })
-    persistImmediately(get())
+    deferPersist(get())
   },
   resetCurrentPhase: () => {
+    // This resets the active phase instantly in Zustand and defers the storage write so Reset does not block the tap response.
     const currentState = get()
     const nextTimer = transitionTimerState({
       timer: currentState.timer,
@@ -142,9 +170,10 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     })
 
     set({ timer: nextTimer })
-    persistImmediately(get())
+    deferPersist(get())
   },
   advanceToNextPhase: () => {
+    // This advances to the next phase immediately in memory and defers persistence because the transition is user-visible but not crash-critical.
     const currentState = get()
     const nextTimer = transitionTimerState({
       timer: currentState.timer,
@@ -161,9 +190,10 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
         ),
       },
     })
-    persistImmediately(get())
+    deferPersist(get())
   },
   hydrateAndRecover: () => {
+    // This recomputes timer progress from in-memory state on each tick and only persists on the completion edge that must survive tab closure.
     const currentState = get()
     const recoveredTimer = recoverTimerState({
       timer: currentState.timer,
@@ -190,7 +220,10 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
       totalCompletedFocusSessions:
         currentState.totalCompletedFocusSessions + completedFocusIncrement,
     })
-    persistImmediately(get())
+
+    if (shouldPlayCompletionChime) {
+      persistImmediately(get())
+    }
 
     if (shouldPlayCompletionChime) {
       void playCompletionChime(currentState.settings.soundEnabled)
@@ -235,6 +268,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     schedulePersist(get())
   },
   setActiveTaskChecked: (checked) => {
+    // This updates task completion state right away and defers persistence so checkbox feedback stays instant on mobile.
     const currentState = get()
     const trimmedTask = currentState.activeTask.text.trim()
     const shouldAppendHistoryEntry =
@@ -263,14 +297,15 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     }))
 
     // TODO(business-logic): Decide whether checking an empty task should surface inline feedback instead of silently doing nothing.
-    persistImmediately(get())
+    deferPersist(get())
   },
   deleteCompletedTask: (id) => {
+    // This removes a completed task from Zustand first and defers the storage write to keep deletion interactions responsive.
     set((state) => ({
       completedTasks: state.completedTasks.filter((entry) => entry.id !== id),
     }))
 
-    persistImmediately(get())
+    deferPersist(get())
   },
   setNotesDraft: (text) => {
     set((state) => ({
@@ -283,6 +318,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
     schedulePersist(get())
   },
   saveNoteSnapshot: () => {
+    // This saves the note snapshot into the live store immediately and defers persistence so Save feels instant.
     const currentState = get()
     const draft = currentState.notes.currentDraft.trim()
 
@@ -304,9 +340,10 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
       },
     }))
 
-    persistImmediately(get())
+    deferPersist(get())
   },
   deleteNoteSnapshot: (id) => {
+    // This deletes a note snapshot from memory first and defers persistence because the UI change matters more than the storage timing.
     set((state) => ({
       notes: {
         ...state.notes,
@@ -316,7 +353,7 @@ export const useStudyTimerStore = create<StudyTimerStore>((set, get) => ({
       },
     }))
 
-    persistImmediately(get())
+    deferPersist(get())
   },
   openNotesSheet: () => {
     set((state) => ({
